@@ -1,4 +1,6 @@
 #include <iostream>
+// #include "common.h"
+
 using std::cout;
 using std::cin;
 using std::endl;
@@ -9,5 +11,7 @@ public:
   voraldo();
 
   int n;
+
 private:
+
 };
