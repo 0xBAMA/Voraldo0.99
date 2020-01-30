@@ -162,8 +162,6 @@ private:
 	double grad( int hash, double x, double y, double z );
 };
 
-
-
 //  ╦  ╦┌─┐┬─┐┌─┐┬  ┌┬┐┌─┐
 //  ╚╗╔╝│ │├┬┘├─┤│   │││ │
 //   ╚╝ └─┘┴└─┴ ┴┴─┘─┴┘└─┘
