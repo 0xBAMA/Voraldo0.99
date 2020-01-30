@@ -1,10 +1,6 @@
 #include "voraldo.h"
 
 
-
-
-
-
 //DEBUG STUFF
 
 void GLAPIENTRY MessageCallback( GLenum source,
@@ -122,7 +118,36 @@ double PerlinNoise::grad(int hash, double x, double y, double z) {
 }
 
 
+
 voraldo::voraldo()
 {
   n = 5;
+
+  SDL_Init( SDL_INIT_VIDEO );
+  SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+  SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+  SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
+  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
+  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
+  SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
+
+  SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1);
+  SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 8);
+
+  SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
+  SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 5 );
+  SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+
+
+
+  window = SDL_CreateWindow( "OpenGL Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowwidth, windowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+  context = SDL_GL_CreateContext( window );
+
+  SDL_Delay(10000);
+
+
+
+
+
+
 }

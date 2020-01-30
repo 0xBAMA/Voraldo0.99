@@ -175,6 +175,14 @@ public:
 
 private:
 
+
+
+  static const int windowwidth = 1200;
+  static const int windowheight = 700;
+  SDL_Window * window;
+
+  SDL_GLContext context;
+
 };
 
 
