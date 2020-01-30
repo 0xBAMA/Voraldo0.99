@@ -36,51 +36,7 @@ using std::endl;
 #include <SDL.h>
 #include <SDL_opengl.h>
 
-//DEBUG STUFF
 
-#ifndef DEBUG
-#define DEBUG
-
-void GLAPIENTRY
-MessageCallback( GLenum source,
-                 GLenum type,
-                 GLuint id,
-                 GLenum severity,
-                 GLsizei length,
-                 const GLchar* message,
-                 const void* userParam )
-{
-
-  bool show_high_severity         = true;
-  bool show_medium_severity       = true;
-  bool show_low_severity          = true;
-  bool show_notification_severity = true;
-
-  if(severity == GL_DEBUG_SEVERITY_HIGH && show_high_severity)
-    fprintf( stderr, "        GL CALLBACK: %s type = 0x%x, severity = GL_DEBUG_SEVERITY_HIGH, message = %s\n",
-           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
-            type, message );
-
-  if(severity == GL_DEBUG_SEVERITY_MEDIUM && show_medium_severity)
-    fprintf( stderr, "        GL CALLBACK: %s type = 0x%x, severity = GL_DEBUG_SEVERITY_MEDIUM, message = %s\n",
-           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
-            type, message );
-
-  if(severity == GL_DEBUG_SEVERITY_LOW && show_low_severity)
-    fprintf( stderr, "        GL CALLBACK: %s type = 0x%x, severity = GL_DEBUG_SEVERITY_LOW, message = %s\n",
-           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
-            type, message );
-
-  if(severity == GL_DEBUG_SEVERITY_NOTIFICATION && show_notification_severity)
-    fprintf( stderr, "        GL CALLBACK: %s type = 0x%x, severity = GL_DEBUG_SEVERITY_NOTIFICATION, message = %s\n",
-           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
-            type, message );
-
-  // SDL_Delay(1000);
-
-}
-
-#endif
 
 //  ╔═╗┬ ┬┌─┐┌┬┐┌─┐┬─┐
 //  ╚═╗├─┤├─┤ ││├┤ ├┬┘
