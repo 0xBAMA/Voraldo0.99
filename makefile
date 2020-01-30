@@ -1,15 +1,17 @@
 LODEPNG_FLAGS = -ansi -O3 -std=c++11
-VORALDO_FLAGS = -std=c++11 -lGLEW -lGL -lGLU $(shell pkg-config sdl2 --cflags --libs)
+VORALDO_FLAGS = $(shell pkg-config sdl2 --cflags --libs) -O3 -std=c++11 -lGLEW -lGL -lGLU
 
-all: lodepng.o voraldo.o main.o
-	g++ -o main main.o voraldo.o
-	rm *.o
+all: msg main
 
-main.o: main.cc voraldo.o
-	g++ -c -o main.o main.cc
+msg:
+		@echo 'Compiling starts on '
+		@date
 
-voraldo.o: voraldo.h voraldo.cc
-	g++ -c -o voraldo.o voraldo.cc ${VORALDO_FLAGS}
+main: voraldo.h voraldo.cc lodepng.o
+	g++ ${VORALDO_FLAGS} -o main -O3 -lSDL2 main.cc voraldo.cc lodepng.o
 
 lodepng.o: lodepng.h lodepng.cc
-	g++ -c -o lodepng.o lodepng.cc ${LODEPNG_FLAGS}
+	g++ ${LODEPNG_FLAGS} -c -o lodepng.o lodepng.cc
+
+run: msg
+	time ./main
