@@ -84,13 +84,10 @@ int main( int argc, char * argv[] )
   bool aligned = false;
 
 
-
   SDL_Window* win;
   SDL_Renderer* ren;
   SDL_Texture* tex;
   SDL_Texture* splash;
-
-
 
 
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0){ cerr << "SDL_Init Error: " << SDL_GetError() << endl; return EXIT_FAILURE; }
@@ -104,11 +101,6 @@ int main( int argc, char * argv[] )
 
   SDL_Surface* bmp1 = NULL;
   SDL_Surface* bmp2 = NULL;
-
-
-
-
-
 
   bmp1 = SDL_LoadBMP("grumpy-cat.bmp");
   if (bmp1 == NULL){ cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl; return EXIT_FAILURE; }

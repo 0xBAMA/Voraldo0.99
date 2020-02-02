@@ -140,8 +140,8 @@ voraldo::voraldo()
 
 
 
-  window = SDL_CreateWindow( "OpenGL Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowwidth, windowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
-  context = SDL_GL_CreateContext( window );
+  OpenGL_window = SDL_CreateWindow( "OpenGL Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowwidth, windowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+  GLcontext = SDL_GL_CreateContext( OpenGL_window );
 
 
   //DEBUG
@@ -150,11 +150,92 @@ voraldo::voraldo()
 
   glClearColor( 0.6, 0.16, 0.0, 1.0 );
 
+  SDL_Delay(30);
+
+
+
+
+
+
+
+
+
+  SDL_Window* win;
+  SDL_Renderer* ren;
+  SDL_Texture* tex;
+  SDL_Texture* splash;
+
+
+  if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+  {
+     cerr << "SDL_Init Error: " << SDL_GetError() << endl;
+  // return EXIT_FAILURE;
+  }
+
+  Informational_window = SDL_CreateWindow("Hello World!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 720, 405, SDL_WINDOW_OPENGL);
+  if (Informational_window == NULL)
+  {
+     cerr << "SDL_CreateWindow Error: " << SDL_GetError() << endl;
+  // return EXIT_FAILURE;
+  }
+
+  ren  = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  if (ren == NULL)
+  {
+     cerr << "SDL_CreateRenderer Error" << SDL_GetError() << endl;
+  // return EXIT_FAILURE;
+  }
+
+
+  SDL_Surface* bmp1 = NULL;
+  SDL_Surface* bmp2 = NULL;
+
+  bmp1 = SDL_LoadBMP("resources/grumpy-cat.bmp");
+  if (bmp1 == NULL)
+  {
+     cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
+  // return EXIT_FAILURE;
+  }
+
+  tex = SDL_CreateTextureFromSurface(ren, bmp1);
+  SDL_FreeSurface(bmp1);
+  if (tex == NULL)
+  {
+     cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
+  // return EXIT_FAILURE;
+  }
+
+
+  bmp2 = SDL_LoadBMP("resources/splash.bmp");
+  if (bmp2 == NULL)
+  {
+     cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
+  // return EXIT_FAILURE;
+  }
+
+  splash = SDL_CreateTextureFromSurface(ren, bmp2);
+  SDL_FreeSurface(bmp2);
+  if (splash == NULL)
+  {
+     cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
+  // return EXIT_FAILURE;
+  }
+
+
+
+
+
+
+
+
+
+
   SDL_Delay(3000);
 
-  SDL_GL_DeleteContext( context );
-  SDL_DestroyWindow( window );
-  SDL_Delay(3000);
+
+  SDL_GL_DeleteContext( GLcontext );
+  SDL_DestroyWindow( OpenGL_window );
+  SDL_DestroyWindow( Informational_window );
   SDL_Quit();
 
 

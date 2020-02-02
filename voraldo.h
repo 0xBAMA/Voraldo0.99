@@ -179,9 +179,14 @@ private:
 
   static const int windowwidth = 1200;
   static const int windowheight = 700;
-  SDL_Window * window;
 
-  SDL_GLContext context;
+  static const int Infowindowwidth = 320;
+  static const int Infowindowheight = 280;
+
+  SDL_Window * OpenGL_window;
+  SDL_Window * Informational_window;
+
+  SDL_GLContext GLcontext;
 
 };
 
