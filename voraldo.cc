@@ -143,7 +143,19 @@ voraldo::voraldo()
   window = SDL_CreateWindow( "OpenGL Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowwidth, windowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
   context = SDL_GL_CreateContext( window );
 
-  SDL_Delay(10000);
+
+  //DEBUG
+  glEnable              ( GL_DEBUG_OUTPUT );
+  glDebugMessageCallback( MessageCallback, 0 );
+
+  glClearColor( 0.6, 0.16, 0.0, 1.0 );
+
+  SDL_Delay(3000);
+
+  SDL_GL_DeleteContext( context );
+  SDL_DestroyWindow( window );
+  SDL_Delay(3000);
+  SDL_Quit();
 
 
 
