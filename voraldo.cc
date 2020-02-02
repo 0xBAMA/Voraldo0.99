@@ -221,7 +221,23 @@ voraldo::voraldo()
   // return EXIT_FAILURE;
   }
 
+  SDL_Rect SrcRect; //where are we taking pixels from?
+  SDL_Rect DestRect;  //the pixels we took from SrcRect?
 
+  SrcRect.x = 0;
+  SrcRect.y = 0;
+  SrcRect.w = 720;
+  SrcRect.h = 405;
+
+  DestRect.x = 0;
+  DestRect.y = 0;
+  DestRect.w = 720;
+  DestRect.h = 405;
+
+  SDL_RenderCopy(ren, splash, &SrcRect, &DestRect);
+  SDL_RenderPresent(ren); //swap buffers so that this most recently drawn material is shown to the user
+
+  SDL_Delay(1200);
 
 
 
