@@ -140,7 +140,7 @@ voraldo::voraldo()
 
 
 
-  OpenGL_window = SDL_CreateWindow( "OpenGL Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowwidth, windowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+  OpenGL_window = SDL_CreateWindow( "OpenGL Window", 200, 200, windowwidth, windowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
   GLcontext = SDL_GL_CreateContext( OpenGL_window );
 
 
@@ -172,7 +172,7 @@ voraldo::voraldo()
   // return EXIT_FAILURE;
   }
 
-  Informational_window = SDL_CreateWindow("Hello World!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 720, 405, SDL_WINDOW_OPENGL);
+  Informational_window = SDL_CreateWindow("Hello World!", 0, 0, 720, 405, SDL_WINDOW_OPENGL);
   if (Informational_window == NULL)
   {
      cerr << "SDL_CreateWindow Error: " << SDL_GetError() << endl;
@@ -237,26 +237,42 @@ voraldo::voraldo()
   SDL_RenderCopy(ren, splash, &SrcRect, &DestRect);
   SDL_RenderPresent(ren); //swap buffers so that this most recently drawn material is shown to the user
 
-  SDL_Delay(1200);
+  // SDL_Delay(5000);
+
+  while(1)
+  {
+    if(!main_loop())
+    {
+      break;
+    }
+  }
+}
 
 
 
+int voraldo::main_loop()
+{
+  SDL_Event event;
+  while( SDL_PollEvent( &event ) )
+  {
+      switch( event.type )
+      {
+          case SDL_KEYUP:
+              if( event.key.keysym.sym == SDLK_ESCAPE )
+                  return 0;
+              break;
 
+          default:
+            return 1;
+            break;
+      }
+  }
+}
 
-
-
-
-  SDL_Delay(3000);
-
-
+voraldo::~voraldo()
+{
   SDL_GL_DeleteContext( GLcontext );
   SDL_DestroyWindow( OpenGL_window );
   SDL_DestroyWindow( Informational_window );
   SDL_Quit();
-
-
-
-
-
-
 }

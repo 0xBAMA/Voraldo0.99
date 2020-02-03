@@ -170,12 +170,13 @@ class voraldo
 {
 public:
   voraldo();
+  ~voraldo();
 
   int n;
 
 private:
 
-
+  int main_loop();
 
   static const int windowwidth = 1200;
   static const int windowheight = 700;
