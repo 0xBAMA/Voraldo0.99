@@ -237,6 +237,7 @@ voraldo::voraldo()
   SDL_RenderCopy(ren, splash, &SrcRect, &DestRect);
   SDL_RenderPresent(ren); //swap buffers so that this most recently drawn material is shown to the user
 
+  SDL_DestroyRenderer(ren);
   // SDL_Delay(5000);
 
   while(1)
@@ -273,6 +274,51 @@ voraldo::~voraldo()
 {
   SDL_GL_DeleteContext( GLcontext );
   SDL_DestroyWindow( OpenGL_window );
+
+
+  SDL_Renderer* ren;
+  SDL_Texture* tex;
+  SDL_Texture* splash;
+
+  SDL_Surface* bmp2 = NULL;
+
+  ren  = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+  SDL_RenderClear(ren); //clear our background
+
+  bmp2 = SDL_LoadBMP("resources/exit_splash.bmp");
+  if (bmp2 == NULL)
+  {
+     cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
+  // return EXIT_FAILURE;
+  }
+
+  splash = SDL_CreateTextureFromSurface(ren, bmp2);
+  SDL_FreeSurface(bmp2);
+  if (splash == NULL)
+  {
+     cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
+  // return EXIT_FAILURE;
+  }
+
+  SDL_Rect SrcRect; //where are we taking pixels from?
+  SDL_Rect DestRect;  //the pixels we took from SrcRect?
+
+  SrcRect.x = 0;
+  SrcRect.y = 0;
+  SrcRect.w = 720;
+  SrcRect.h = 405;
+
+  DestRect.x = 0;
+  DestRect.y = 0;
+  DestRect.w = 720;
+  DestRect.h = 405;
+
+  SDL_RenderCopy(ren, splash, &SrcRect, &DestRect);
+  SDL_RenderPresent(ren); //swap buffers so that this most recently drawn material is shown to the user
+
+  SDL_Delay(1200);
+
   SDL_DestroyWindow( Informational_window );
   SDL_Quit();
 }
