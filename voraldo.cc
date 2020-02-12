@@ -254,6 +254,10 @@ void voraldo::create_info_window()
 
 
 
+
+
+
+
   //write some text
   if( TTF_Init() == -1 )  cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << endl;
 
@@ -279,6 +283,11 @@ void voraldo::create_info_window()
   //Free font
   TTF_CloseFont( font );
   font = NULL;
+
+
+
+
+
 
 
 
