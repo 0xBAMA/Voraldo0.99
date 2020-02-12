@@ -225,7 +225,7 @@ void voraldo::create_gl_window()
   SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 5 );
   SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 
-  OpenGL_window = SDL_CreateWindow( "OpenGL Window", 200, 200, windowwidth, windowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+  OpenGL_window = SDL_CreateWindow( "OpenGL Window", 200, 0, windowwidth, windowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
   GLcontext = SDL_GL_CreateContext( OpenGL_window );
 
   //DEBUG
@@ -239,7 +239,7 @@ void voraldo::create_gl_window()
 
 void voraldo::create_info_window()
 {
-  Informational_window = SDL_CreateWindow("Hello World!", 0, 0, 720, 405, SDL_WINDOW_OPENGL);
+  Informational_window = SDL_CreateWindow("Hello World!", 10, 100, 720, 405, SDL_WINDOW_OPENGL);
   if (Informational_window == NULL) cerr << "SDL_CreateWindow Error: " << SDL_GetError() << endl;
 
   SDL_Renderer* renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -254,6 +254,10 @@ void voraldo::create_info_window()
   SDL_RenderCopy(renderer, splash, &SrcRect, &DestRect);
   SDL_RenderPresent(renderer); //swap buffers so that this most recently drawn material is shown to the user
 
-  // SDL_Delay(5000);
+  SDL_Delay(2000);
+
+  SDL_RenderClear(renderer); //clear our background
+  SDL_RenderPresent(renderer); //swap buffers
+
   SDL_DestroyRenderer(renderer);
 }

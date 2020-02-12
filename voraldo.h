@@ -34,7 +34,8 @@ using std::endl;
 
 
 #include <SDL.h>
-#include <SDL_opengl.h>
+#include <SDL_opengl.h>     //allows you to run OpenGL inside of SDL2
+#include <SDL2/SDL_ttf.h>   //allows rendering of text using .ttf font files (SDL 2d renderer only)
 
 
 

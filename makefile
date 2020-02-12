@@ -8,7 +8,7 @@ msg:
 		@date
 
 main: voraldo.h voraldo.cc lodepng.o
-	g++ -o main main.cc voraldo.cc lodepng.o ${VORALDO_FLAGS} -O3 -lSDL2
+	g++ -o main main.cc voraldo.cc lodepng.o ${VORALDO_FLAGS} -O3 -lSDL2 -lSDL2_ttf
 
 lodepng.o: lodepng.h lodepng.cc
 	g++ ${LODEPNG_FLAGS} -c -o lodepng.o lodepng.cc
