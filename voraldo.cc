@@ -259,45 +259,51 @@ void voraldo::create_info_window()
 
 
   //write some text
-  if( TTF_Init() == -1 )  cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << endl;
 
-  TTF_Font *font = TTF_OpenFont( "resources/fonts/Braciola MS.ttf", 12 );
+
+  //initialize the text engine, load a local .ttf file, report error if neccesary
+  if( TTF_Init() == -1 )  cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << endl;
+  // TTF_Font *font = TTF_OpenFont( "resources/fonts/Braciola MS.ttf", 12 );
+  TTF_Font *font = TTF_OpenFont( "resources/fonts/SquareDotDigital7-Dpv9.ttf", 18 );
+
 
   if(font == NULL) cout << "loading failed" << endl;
 
 
 
-  SDL_Color clrFg1 = {255,0,255};
-  std::string blep("This is some example text.\nThis is the second line. \nAnd the third. \n");
-  SDL_Texture* message1;
 
-  SDL_Surface *sText1 = TTF_RenderText_Solid( font, blep.c_str(), clrFg1 );
-  message1 = SDL_CreateTextureFromSurface( renderer, sText1 );
+
+  //everything to render one string
+  SDL_Color clrFg1 = {255,0,255};
+  //note this bit on the next line doesn't work - line breaks are ignored by SDL_ttf's renderer
+  std::string blep("This is some example text. This is the second line.  And the third.");
+  SDL_Surface * sText1 = TTF_RenderText_Solid( font, blep.c_str(), clrFg1 );
+  SDL_Texture * message1 = SDL_CreateTextureFromSurface( renderer, sText1 );
   int wid = sText1->w;
   int hei = sText1->h;
 
-  SDL_FreeSurface( sText1 );
-
   SDL_Rect renderQuad = { 10, 10, wid, hei };
   SDL_RenderCopy( renderer, message1, NULL, &renderQuad );
+  SDL_FreeSurface( sText1 );
+  SDL_DestroyTexture( message1 );
 
 
 
 
 
+  //render a second string
   SDL_Color clrFg2 = {255,255,0};
-  std::string blep2("second string\n");
-  SDL_Texture* message2;
-
-  SDL_Surface *sText2 = TTF_RenderText_Solid( font, blep2.c_str(), clrFg2 );
-  message2 = SDL_CreateTextureFromSurface( renderer, sText2 );
+  std::string blep2("second string");
+  SDL_Surface * sText2 = TTF_RenderText_Solid( font, blep2.c_str(), clrFg2 );
+  SDL_Texture * message2 = SDL_CreateTextureFromSurface( renderer, sText2 );
   wid = sText2->w;
   hei = sText2->h;
 
-  SDL_FreeSurface( sText2 );
-
   renderQuad = { 10, 25, wid, hei };
   SDL_RenderCopy( renderer, message2, NULL, &renderQuad );
+  SDL_FreeSurface( sText2 );
+  SDL_DestroyTexture( message2 );
+
 
 
 
