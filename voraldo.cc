@@ -1,6 +1,5 @@
 #include "voraldo.h"
 
-
 //DEBUG STUFF
 
 void GLAPIENTRY MessageCallback( GLenum source,
@@ -162,7 +161,6 @@ voraldo::voraldo()
 
   SDL_Window* win;
   SDL_Renderer* ren;
-  SDL_Texture* tex;
   SDL_Texture* splash;
 
 
@@ -187,23 +185,7 @@ voraldo::voraldo()
   }
 
 
-  SDL_Surface* bmp1 = NULL;
   SDL_Surface* bmp2 = NULL;
-
-  bmp1 = SDL_LoadBMP("resources/grumpy-cat.bmp");
-  if (bmp1 == NULL)
-  {
-     cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
-  // return EXIT_FAILURE;
-  }
-
-  tex = SDL_CreateTextureFromSurface(ren, bmp1);
-  SDL_FreeSurface(bmp1);
-  if (tex == NULL)
-  {
-     cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
-  // return EXIT_FAILURE;
-  }
 
 
   bmp2 = SDL_LoadBMP("resources/splash.bmp");
@@ -253,6 +235,12 @@ voraldo::voraldo()
 
 int voraldo::main_loop()
 {
+  //in order to handle buttons, we're going to check the event's windowid,
+  //event.button.windowID against the Informational_window id, which is acquired with
+
+  //   Uint32 SDL_GetWindowID(SDL_Window* window)
+
+
   SDL_Event event;
   while( SDL_PollEvent( &event ) )
   {
@@ -274,6 +262,8 @@ voraldo::~voraldo()
 {
   SDL_GL_DeleteContext( GLcontext );
   SDL_DestroyWindow( OpenGL_window );
+
+  SDL_Delay(30);
 
 
   SDL_Renderer* ren;
@@ -316,6 +306,8 @@ voraldo::~voraldo()
 
   SDL_RenderCopy(ren, splash, &SrcRect, &DestRect);
   SDL_RenderPresent(ren); //swap buffers so that this most recently drawn material is shown to the user
+  SDL_DestroyRenderer(ren);
+
 
   SDL_Delay(1200);
 
