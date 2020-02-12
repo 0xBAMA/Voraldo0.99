@@ -120,15 +120,8 @@ double PerlinNoise::grad(int hash, double x, double y, double z) {
 
 voraldo::voraldo()
 {
-  SrcRect.x = 0;
-  SrcRect.y = 0;
-  SrcRect.w = 720;
-  SrcRect.h = 405;
-
-  DestRect.x = 0;
-  DestRect.y = 0;
-  DestRect.w = 720;
-  DestRect.h = 405;
+  SrcRect  = {0,0,720,405};
+  DestRect = {0,0,720,405};
 
   cout << "creating GL window" << endl;
   create_gl_window();
@@ -201,7 +194,7 @@ voraldo::~voraldo()
   SDL_RenderPresent(renderer); //swap buffers so that this most recently drawn material is shown to the user
   SDL_DestroyRenderer(renderer);
 
-  SDL_Delay(1200);  //hold to show the exit splash
+  SDL_Delay(1200);  //hold for some period of time to show the exit splash
 
   SDL_DestroyWindow( Informational_window );
   SDL_Quit();
@@ -257,7 +250,39 @@ void voraldo::create_info_window()
   SDL_Delay(2000);
 
   SDL_RenderClear(renderer); //clear our background
-  SDL_RenderPresent(renderer); //swap buffers
 
+
+
+
+  //write some text
+  if( TTF_Init() == -1 )  cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << endl;
+
+  TTF_Font *font = TTF_OpenFont( "resources/fonts/Braciola MS.ttf", 12 );
+
+  if(font == NULL)  cout << "loading failed" << endl;
+
+  SDL_Color clrFg = {0,0,255};  // Blue ("Fg" is foreground)
+
+  std::string blep("This is some example text.\n");
+
+  SDL_Surface *sText = TTF_RenderText_Solid( font, blep.c_str(), clrFg );
+
+  int wid = sText->w;
+  int hei = sText->h;
+
+  SDL_Texture* message = SDL_CreateTextureFromSurface( renderer, sText );
+  SDL_FreeSurface( sText );
+
+  SDL_Rect renderQuad = { 0, 0, wid, hei };
+  SDL_RenderCopy( renderer, message, NULL, &renderQuad );
+
+  //Free font
+  TTF_CloseFont( font );
+  font = NULL;
+
+
+
+  SDL_RenderPresent(renderer); //swap buffers
+  SDL_Delay(1000);
   SDL_DestroyRenderer(renderer);
 }
