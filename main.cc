@@ -2,7 +2,6 @@
 
 int main(int argc, char const *argv[])
 {
-  voraldo v;
-  // std::cout << "test " << v.n << endl;
+  voraldo v;  //constructor enters main loop, quitting falls through constructor
   return 0;
 }
