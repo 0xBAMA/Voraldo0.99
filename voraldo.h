@@ -176,19 +176,38 @@ private:
 
   int main_loop();
 
+//  ╔═╗┌─┐┌┬┐┌┬┐┌─┐┌┐┌  ╔═╗╔╦╗╦    ┌─┐┌┬┐┬ ┬┌─┐┌─┐
+//  ║  │ ││││││││ ││││  ╚═╗ ║║║    └─┐ │ │ │├┤ ├┤
+//  ╚═╝└─┘┴ ┴┴ ┴└─┘┘└┘  ╚═╝═╩╝╩═╝  └─┘ ┴ └─┘└  └
+
+  SDL_Rect SrcRect; //where are we taking pixels from?
+  SDL_Rect DestRect;  //where are we putting the pixels we took from SrcRect?
+
+
+  //  ╔═╗┌─┐┌─┐┌┐┌╔═╗╦    ╦ ╦┬┌┐┌┌┬┐┌─┐┬ ┬
+  //  ║ ║├─┘├┤ │││║ ╦║    ║║║││││ │││ ││││
+  //  ╚═╝┴  └─┘┘└┘╚═╝╩═╝  ╚╩╝┴┘└┘─┴┘└─┘└┴┘
 
   //this window plays host to all the hardware accelerated 3d graphics, and the GL context
-  SDL_Window * OpenGL_window;           SDL_GLContext GLcontext;
+  SDL_Window * OpenGL_window;
+  SDL_GLContext GLcontext;
+
   static const int windowwidth = 1200;
   static const int windowheight = 700;
+
   void create_gl_window();
 
 
+  //  ╦┌┐┌┌─┐┌─┐  ╦ ╦┬┌┐┌┌┬┐┌─┐┬ ┬
+  //  ║│││├┤ │ │  ║║║││││ │││ ││││
+  //  ╩┘└┘└  └─┘  ╚╩╝┴┘└┘─┴┘└─┘└┴┘
 
   //this window will display images using the SDL 2d renderer, as well as buttons
   SDL_Window * Informational_window;
+
   static const int Infowindowwidth = 320;
   static const int Infowindowheight = 280;
+
   void create_info_window();
 
 };

@@ -120,11 +120,23 @@ double PerlinNoise::grad(int hash, double x, double y, double z) {
 
 voraldo::voraldo()
 {
+  SrcRect.x = 0;
+  SrcRect.y = 0;
+  SrcRect.w = 720;
+  SrcRect.h = 405;
+
+  DestRect.x = 0;
+  DestRect.y = 0;
+  DestRect.w = 720;
+  DestRect.h = 405;
+
   cout << "creating GL window" << endl;
   create_gl_window();
   cout << "creating info window" << endl;
   create_info_window();
 
+  cout << "initializing voraldo components" << endl;
+  //todo
 
   cout << "entering main loop" << endl;
   while(1)
@@ -153,7 +165,10 @@ int voraldo::main_loop()
       {
           case SDL_KEYUP:
               if( event.key.keysym.sym == SDLK_ESCAPE )
-                  return 0;
+              {
+                cout << "GOODBYE" << endl;
+                return 0;
+              }
               break;
 
           default:
@@ -171,50 +186,22 @@ voraldo::~voraldo()
   SDL_Delay(30);
 
 
-  SDL_Renderer* ren;
-  SDL_Texture* tex;
-  SDL_Texture* splash;
+  SDL_Renderer* renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-  SDL_Surface* bmp2 = NULL;
+  SDL_Surface* exit_splashBMP = SDL_LoadBMP("resources/exit_splash.bmp");
+  if (exit_splashBMP == NULL)  cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
 
-  ren  = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  SDL_Texture* exit_splash = SDL_CreateTextureFromSurface(renderer, exit_splashBMP);
+  SDL_FreeSurface(exit_splashBMP); //free that surface
+  if (exit_splash == NULL) cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
 
-  SDL_RenderClear(ren); //clear our background
+  SDL_RenderClear(renderer); //clear our background
 
-  bmp2 = SDL_LoadBMP("resources/exit_splash.bmp");
-  if (bmp2 == NULL)
-  {
-     cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
-  // return EXIT_FAILURE;
-  }
+  SDL_RenderCopy(renderer, exit_splash, &SrcRect, &DestRect);  //blit the image to the window
+  SDL_RenderPresent(renderer); //swap buffers so that this most recently drawn material is shown to the user
+  SDL_DestroyRenderer(renderer);
 
-  splash = SDL_CreateTextureFromSurface(ren, bmp2);
-  SDL_FreeSurface(bmp2);
-  if (splash == NULL)
-  {
-     cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
-  // return EXIT_FAILURE;
-  }
-
-  SDL_Rect SrcRect; //where are we taking pixels from?
-  SDL_Rect DestRect;  //the pixels we took from SrcRect?
-
-  SrcRect.x = 0;
-  SrcRect.y = 0;
-  SrcRect.w = 720;
-  SrcRect.h = 405;
-
-  DestRect.x = 0;
-  DestRect.y = 0;
-  DestRect.w = 720;
-  DestRect.h = 405;
-
-  SDL_RenderCopy(ren, splash, &SrcRect, &DestRect);
-  SDL_RenderPresent(ren); //swap buffers so that this most recently drawn material is shown to the user
-  SDL_DestroyRenderer(ren);
-
-
-  SDL_Delay(1200);
+  SDL_Delay(1200);  //hold to show the exit splash
 
   SDL_DestroyWindow( Informational_window );
   SDL_Quit();
@@ -255,31 +242,18 @@ void voraldo::create_info_window()
   Informational_window = SDL_CreateWindow("Hello World!", 0, 0, 720, 405, SDL_WINDOW_OPENGL);
   if (Informational_window == NULL) cerr << "SDL_CreateWindow Error: " << SDL_GetError() << endl;
 
-  SDL_Renderer* ren = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-  if (ren == NULL) cerr << "SDL_CreateRenderer Error" << SDL_GetError() << endl;
+  SDL_Renderer* renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  if (renderer == NULL) cerr << "SDL_CreateRenderer Error" << SDL_GetError() << endl;
 
-  SDL_Surface* bmp2 = SDL_LoadBMP("resources/splash.bmp");
-  if (bmp2 == NULL) cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
+  SDL_Surface* splashBMP = SDL_LoadBMP("resources/splash.bmp");
+  if (splashBMP == NULL) cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
 
-  SDL_Texture* splash = SDL_CreateTextureFromSurface(ren, bmp2);  SDL_FreeSurface(bmp2);
+  SDL_Texture* splash = SDL_CreateTextureFromSurface(renderer, splashBMP);  SDL_FreeSurface(splashBMP);
   if (splash == NULL) cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
 
-  SDL_Rect SrcRect; //where are we taking pixels from?
-  SDL_Rect DestRect;  //where are we putting the pixels we took from SrcRect?
+  SDL_RenderCopy(renderer, splash, &SrcRect, &DestRect);
+  SDL_RenderPresent(renderer); //swap buffers so that this most recently drawn material is shown to the user
 
-  SrcRect.x = 0;
-  SrcRect.y = 0;
-  SrcRect.w = 720;
-  SrcRect.h = 405;
-
-  DestRect.x = 0;
-  DestRect.y = 0;
-  DestRect.w = 720;
-  DestRect.h = 405;
-
-  SDL_RenderCopy(ren, splash, &SrcRect, &DestRect);
-  SDL_RenderPresent(ren); //swap buffers so that this most recently drawn material is shown to the user
-
-  SDL_DestroyRenderer(ren);
   // SDL_Delay(5000);
+  SDL_DestroyRenderer(renderer);
 }
