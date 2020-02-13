@@ -25,7 +25,7 @@ void GLAPIENTRY MessageCallback( GLenum source,
     fprintf( stderr, "        GL CALLBACK: %s type = 0x%x, severity = GL_DEBUG_SEVERITY_LOW, message = %s\n",
            ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ), type, message );
 
-  bool show_notification_severity = true;
+  bool show_notification_severity = false;
   if(severity == GL_DEBUG_SEVERITY_NOTIFICATION && show_notification_severity)
     fprintf( stderr, "        GL CALLBACK: %s type = 0x%x, severity = GL_DEBUG_SEVERITY_NOTIFICATION, message = %s\n",
            ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ), type, message );
@@ -187,22 +187,26 @@ int voraldo::main_loop()
     switch( event.type )
     {
       case SDL_KEYUP:
-      if( event.key.keysym.sym == SDLK_ESCAPE )
-      {
-        cout << "GOODBYE" << endl;
-        return 0;
-      }
-      break;
+        if( event.key.keysym.sym == SDLK_ESCAPE )
+        {
+          cout << "GOODBYE" << endl;
+          return 0;
+        }
+        break;
 
       default:
-      return 1;
-      break;
+        return 1;
+        break;
     }
   }
 }
 
 void voraldo::startup_info_dump()
 {
+
+  cout << " Program launched from: " << SDL_GetBasePath() << endl;
+
+
   //this is how you query the screen resolution
   SDL_DisplayMode dm;
   SDL_GetDesktopDisplayMode(0, &dm);
@@ -269,7 +273,7 @@ void voraldo::create_gl_window()
   OpenGL_window = SDL_CreateWindow( "OpenGL Window", total_screen_width/3, 0, 2*(total_screen_width/3), total_screen_height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
   GLcontext = SDL_GL_CreateContext( OpenGL_window );
 
-  SDL_MaximizeWindow(OpenGL_window);
+  // SDL_MaximizeWindow(OpenGL_window);
   SDL_Delay(300);
   SDL_SetWindowBordered(OpenGL_window, SDL_FALSE);
 
@@ -282,7 +286,7 @@ void voraldo::create_gl_window()
   SDL_GL_SwapWindow( OpenGL_window );
 
 
-  SDL_Delay(10);
+  // SDL_Delay(10);
 }
 
 
@@ -320,12 +324,11 @@ void voraldo::create_info_window()
 
   SDL_RenderPresent(SDL_2D_renderer); //swap buffers
   SDL_Delay(1500);
-
 }
 
 void voraldo::font_test()
 {
-  for(int i = 5; i < 400; i+= 18)
+  for(int i = 5; i < (2*(total_screen_height/3)+20); i+= 18)
   {
     SDL_Rect s = {5, i, 200, 16};
     SDL_SetRenderDrawColor(SDL_2D_renderer, 120, 33, 44, 255);

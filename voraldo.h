@@ -178,6 +178,19 @@ private:
   int main_loop();
   void startup_info_dump();
 
+//  ╔╦╗┌─┐┌┐┌┬ ┬  ╦ ╦┌─┐┌┐┌┌┬┐┬  ┬┌┐┌┌─┐
+//  ║║║├┤ ││││ │  ╠═╣├─┤│││ │││  │││││ ┬
+//  ╩ ╩└─┘┘└┘└─┘  ╩ ╩┴ ┴┘└┘─┴┘┴─┘┴┘└┘└─┘
+
+  typedef enum menu_state_t
+  {
+    MAIN_MENU = 0,
+    DRAW_MENU = 1
+    //...
+  } menu_state;
+
+  menu_state current_menu_state;  //so we know where we are
+
 //  ╔═╗┌─┐┌┬┐┌┬┐┌─┐┌┐┌  ╔═╗╔╦╗╦    ┌─┐┌┬┐┬ ┬┌─┐┌─┐
 //  ║  │ ││││││││ ││││  ╚═╗ ║║║    └─┐ │ │ │├┤ ├┤
 //  ╚═╝└─┘┴ ┴┴ ┴└─┘┘└┘  ╚═╝═╩╝╩═╝  └─┘ ┴ └─┘└  └
