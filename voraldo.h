@@ -181,8 +181,23 @@ private:
 //  ║  │ ││││││││ ││││  ╚═╗ ║║║    └─┐ │ │ │├┤ ├┤
 //  ╚═╝└─┘┴ ┴┴ ┴└─┘┘└┘  ╚═╝═╩╝╩═╝  └─┘ ┴ └─┘└  └
 
-  SDL_Rect SrcRect; //where are we taking pixels from?
-  SDL_Rect DestRect;  //where are we putting the pixels we took from SrcRect?
+  SDL_Rect SrcRect  = {0,0,720,405};   //where are we taking pixels from when we load the splash screen
+  SDL_Rect DestRect = {0,0,720,405};  //where are we putting the pixels we took from SrcRect?
+
+  void sdl_ttf_init();               //set up the font and everything
+  TTF_Font *font;                   //the loaded font
+
+  SDL_Renderer* SDL_2D_renderer;
+
+  std::string splash_path = std::string("resources/splash.bmp");
+  SDL_Texture* splash;           //this is the start splash screen
+  SDL_Surface* splashBMP;
+
+
+  std::string exit_splash_path = std::string("resources/exit_splash.bmp");
+  SDL_Texture* exit_splash;   //this is the ending splash screen (could just do it with SDL_ttf)
+  SDL_Surface* exit_splashBMP;
+
 
 
   //  ╔═╗┌─┐┌─┐┌┐┌╔═╗╦    ╦ ╦┬┌┐┌┌┬┐┌─┐┬ ┬

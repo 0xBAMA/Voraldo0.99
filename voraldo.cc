@@ -120,11 +120,12 @@ double PerlinNoise::grad(int hash, double x, double y, double z) {
 
 voraldo::voraldo()
 {
-  SrcRect  = {0,0,720,405};
-  DestRect = {0,0,720,405};
+  cout << "setting up ttf font rendering" << endl;
+  sdl_ttf_init();
 
   cout << "creating GL window" << endl;
   create_gl_window();
+
   cout << "creating info window" << endl;
   create_info_window();
 
@@ -142,6 +143,34 @@ voraldo::voraldo()
 }
 
 
+voraldo::~voraldo()
+{
+  SDL_GL_DeleteContext( GLcontext );
+  SDL_DestroyWindow( OpenGL_window );
+
+  SDL_Delay(30);
+
+  exit_splashBMP = SDL_LoadBMP(exit_splash_path);
+  if (exit_splashBMP == NULL)  cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
+
+  exit_splash = SDL_CreateTextureFromSurface(renderer, exit_splashBMP);
+  SDL_FreeSurface(exit_splashBMP); //free that surface
+  if (exit_splash == NULL) cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
+
+  SDL_RenderClear(SDL_2D_renderer); //clear our background
+
+  SDL_RenderCopy(SDL_2D_renderer, exit_splash, &SrcRect, &DestRect);  //blit the image to the window
+  SDL_RenderPresent(SDL_2D_renderer); //swap buffers so that this most recently drawn material is shown to the user
+  SDL_DestroyRenderer(SDL_2D_renderer);
+
+  SDL_Delay(1200);  //hold for some period of time to show the exit splash
+
+  TTF_CloseFont( font );
+
+  SDL_DestroyWindow( Informational_window );
+  SDL_Quit();
+}
+
 
 int voraldo::main_loop()
 {
@@ -150,54 +179,24 @@ int voraldo::main_loop()
 
   //   Uint32 SDL_GetWindowID(SDL_Window* window)
 
-
   SDL_Event event;
   while( SDL_PollEvent( &event ) )
   {
-      switch( event.type )
+    switch( event.type )
+    {
+      case SDL_KEYUP:
+      if( event.key.keysym.sym == SDLK_ESCAPE )
       {
-          case SDL_KEYUP:
-              if( event.key.keysym.sym == SDLK_ESCAPE )
-              {
-                cout << "GOODBYE" << endl;
-                return 0;
-              }
-              break;
-
-          default:
-            return 1;
-            break;
+        cout << "GOODBYE" << endl;
+        return 0;
       }
+      break;
+
+      default:
+      return 1;
+      break;
+    }
   }
-}
-
-voraldo::~voraldo()
-{
-  SDL_GL_DeleteContext( GLcontext );
-  SDL_DestroyWindow( OpenGL_window );
-
-  SDL_Delay(30);
-
-
-  SDL_Renderer* renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-  SDL_Surface* exit_splashBMP = SDL_LoadBMP("resources/exit_splash.bmp");
-  if (exit_splashBMP == NULL)  cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
-
-  SDL_Texture* exit_splash = SDL_CreateTextureFromSurface(renderer, exit_splashBMP);
-  SDL_FreeSurface(exit_splashBMP); //free that surface
-  if (exit_splash == NULL) cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
-
-  SDL_RenderClear(renderer); //clear our background
-
-  SDL_RenderCopy(renderer, exit_splash, &SrcRect, &DestRect);  //blit the image to the window
-  SDL_RenderPresent(renderer); //swap buffers so that this most recently drawn material is shown to the user
-  SDL_DestroyRenderer(renderer);
-
-  SDL_Delay(1200);  //hold for some period of time to show the exit splash
-
-  SDL_DestroyWindow( Informational_window );
-  SDL_Quit();
 }
 
 
@@ -230,44 +229,47 @@ void voraldo::create_gl_window()
   SDL_Delay(10);
 }
 
-void voraldo::create_info_window()
+
+void voraldo::sdl_ttf_init()
 {
-  Informational_window = SDL_CreateWindow("Hello World!", 10, 100, 720, 405, SDL_WINDOW_OPENGL);
-  if (Informational_window == NULL) cerr << "SDL_CreateWindow Error: " << SDL_GetError() << endl;
-
-  SDL_Renderer* renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-  if (renderer == NULL) cerr << "SDL_CreateRenderer Error" << SDL_GetError() << endl;
-
-  SDL_Surface* splashBMP = SDL_LoadBMP("resources/splash.bmp");
-  if (splashBMP == NULL) cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
-
-  SDL_Texture* splash = SDL_CreateTextureFromSurface(renderer, splashBMP);  SDL_FreeSurface(splashBMP);
-  if (splash == NULL) cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
-
-  SDL_RenderCopy(renderer, splash, &SrcRect, &DestRect);
-  SDL_RenderPresent(renderer); //swap buffers so that this most recently drawn material is shown to the user
-
-  SDL_Delay(2000);
-
-  SDL_RenderClear(renderer); //clear our background
-
-
-
-
-
-
-
-
-  //write some text
-
-
   //initialize the text engine, load a local .ttf file, report error if neccesary
   if( TTF_Init() == -1 )  cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << endl;
   // TTF_Font *font = TTF_OpenFont( "resources/fonts/Braciola MS.ttf", 12 );
-  TTF_Font *font = TTF_OpenFont( "resources/fonts/SquareDotDigital7-Dpv9.ttf", 18 );
-
+  font = TTF_OpenFont( "resources/fonts/SquareDotDigital7-Dpv9.ttf", 18 );
 
   if(font == NULL) cout << "loading failed" << endl;
+}
+
+
+void voraldo::create_info_window()
+{
+
+  Informational_window = SDL_CreateWindow("Hello World!", 10, 100, 720, 405, SDL_WINDOW_OPENGL);
+  if (Informational_window == NULL) cerr << "SDL_CreateWindow Error: " << SDL_GetError() << endl;
+
+  SDL_2D_renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  if (SDL_2D_renderer == NULL) cerr << "SDL_CreateRenderer Error" << SDL_GetError() << endl;
+
+  splashBMP = SDL_LoadBMP(splash_path);
+  if (splashBMP == NULL) cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
+
+  splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, splashBMP);  SDL_FreeSurface(splashBMP);
+  if (splash == NULL) cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
+
+  SDL_RenderCopy(SDL_2D_renderer, splash, &SrcRect, &DestRect);
+  SDL_RenderPresent(SDL_2D_renderer); //swap buffers so that this most recently drawn material is shown to the user
+
+  SDL_Delay(2000);
+
+  SDL_RenderClear(SDL_2D_renderer); //clear our background
+
+
+
+
+
+
+//then we run a test of the font engine, SDL_ttf
+
 
 
 
@@ -275,15 +277,15 @@ void voraldo::create_info_window()
 
   //everything to render one string
   SDL_Color clrFg1 = {255,0,255};
-  //note this bit on the next line doesn't work - line breaks are ignored by SDL_ttf's renderer
+  //note this bit on the next line doesn't work - line breaks are ignored by SDL_ttf's SDL_2D_renderer
   std::string blep("This is some example text. This is the second line.  And the third.");
   SDL_Surface * sText1 = TTF_RenderText_Solid( font, blep.c_str(), clrFg1 );
-  SDL_Texture * message1 = SDL_CreateTextureFromSurface( renderer, sText1 );
+  SDL_Texture * message1 = SDL_CreateTextureFromSurface( SDL_2D_renderer, sText1 );
   int wid = sText1->w;
   int hei = sText1->h;
 
   SDL_Rect renderQuad = { 10, 10, wid, hei };
-  SDL_RenderCopy( renderer, message1, NULL, &renderQuad );
+  SDL_RenderCopy( SDL_2D_renderer, message1, NULL, &renderQuad );
   SDL_FreeSurface( sText1 );
   SDL_DestroyTexture( message1 );
 
@@ -295,34 +297,17 @@ void voraldo::create_info_window()
   SDL_Color clrFg2 = {255,255,0};
   std::string blep2("second string");
   SDL_Surface * sText2 = TTF_RenderText_Solid( font, blep2.c_str(), clrFg2 );
-  SDL_Texture * message2 = SDL_CreateTextureFromSurface( renderer, sText2 );
+  SDL_Texture * message2 = SDL_CreateTextureFromSurface( SDL_2D_renderer, sText2 );
   wid = sText2->w;
   hei = sText2->h;
 
   renderQuad = { 10, 25, wid, hei };
-  SDL_RenderCopy( renderer, message2, NULL, &renderQuad );
+  SDL_RenderCopy( SDL_2D_renderer, message2, NULL, &renderQuad );
   SDL_FreeSurface( sText2 );
   SDL_DestroyTexture( message2 );
 
 
 
-
-
-
-
-
-  //Free font
-  TTF_CloseFont( font );
-  font = NULL;
-
-
-
-
-
-
-
-
-  SDL_RenderPresent(renderer); //swap buffers
+  SDL_RenderPresent(SDL_2D_renderer); //swap buffers
   SDL_Delay(1000);
-  SDL_DestroyRenderer(renderer);
 }
