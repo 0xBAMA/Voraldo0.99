@@ -120,6 +120,11 @@ double PerlinNoise::grad(int hash, double x, double y, double z) {
 
 voraldo::voraldo()
 {
+  SDL_Init( SDL_INIT_EVERYTHING );
+
+  cout << endl << endl << "info dump:" << endl;
+  startup_info_dump();
+
   cout << "setting up ttf font rendering" << endl;
   sdl_ttf_init();
 
@@ -196,10 +201,43 @@ int voraldo::main_loop()
   }
 }
 
+void voraldo::startup_info_dump()
+{
+  cout << " Running on " << std::string(SDL_GetPlatform()) << endl;
+  cout << " Number of logical CPU cores: " << SDL_GetCPUCount() << endl;
+  cout << " System RAM: " << SDL_GetSystemRAM() << " MB" << endl;
+
+  int secs, pct;
+  switch (SDL_GetPowerInfo(&secs, &pct))
+  {
+    case SDL_POWERSTATE_UNKNOWN:
+      cout << " Battery in undetermined state" << endl;
+      break;
+
+    case SDL_POWERSTATE_ON_BATTERY:
+      cout << " Operating on battery - " << pct << " percent remaining, estimated " << secs << "seconds" << endl;
+      break;
+
+    case SDL_POWERSTATE_NO_BATTERY:
+      cout << " No Battery Present" << endl;
+      break;
+
+    case SDL_POWERSTATE_CHARGING:
+      cout << " Battery is charging - " << pct << " percent" << endl;
+      break;
+
+    case SDL_POWERSTATE_CHARGED:
+      cout << " Battery is fully charged" << endl;
+      break;
+  }
+
+  cout << endl << endl;
+
+}
+
 
 void voraldo::create_gl_window()
 {
-  SDL_Init( SDL_INIT_EVERYTHING );
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
   SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
   SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
@@ -214,14 +252,21 @@ void voraldo::create_gl_window()
   SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 5 );
   SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 
+
+
   OpenGL_window = SDL_CreateWindow( "OpenGL Window", 200, 0, windowwidth, windowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
   GLcontext = SDL_GL_CreateContext( OpenGL_window );
+
+  SDL_SetWindowBordered(OpenGL_window, SDL_FALSE);
 
   //DEBUG
   glEnable              ( GL_DEBUG_OUTPUT );
   glDebugMessageCallback( MessageCallback, 0 );
 
   glClearColor( 0.6, 0.16, 0.0, 1.0 );
+  glClear( GL_COLOR_BUFFER_BIT );
+  SDL_GL_SwapWindow( OpenGL_window );
+
 
   SDL_Delay(10);
 }
