@@ -240,7 +240,6 @@ void voraldo::sdl_ttf_init()
 
 void voraldo::create_info_window()
 {
-
   Informational_window = SDL_CreateWindow("Voraldo", 10, 100, 720, 405, SDL_WINDOW_OPENGL);
   SDL_2D_renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
@@ -262,7 +261,15 @@ void voraldo::create_info_window()
 
 void voraldo::font_test()
 {
-  ttf_string("TESTING FONTS testing fonts - The quick brown fox etc etc 0123456789", 10, 10, 206, 143, 0);
+  for(int i = 5; i < 400; i+= 18)
+  {
+    SDL_Rect s = {10, i, 200, 16};
+    SDL_SetRenderDrawColor(SDL_2D_renderer, 120, 33, 44, 255);
+    SDL_RenderDrawRect(SDL_2D_renderer, &s);
+    ttf_string("Is this is any way an actually viable font?", 10, i, 206, 143, 0);
+  }
+
+
 }
 
 void voraldo::ttf_string(std::string s, int basex, int basey, unsigned char r, unsigned char g, unsigned char b)

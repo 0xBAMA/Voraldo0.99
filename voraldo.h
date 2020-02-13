@@ -228,8 +228,8 @@ private:
   //this window will display images using the SDL 2d renderer, as well as buttons
   SDL_Window * Informational_window;
 
-  static const int Infowindowwidth = 320;
-  static const int Infowindowheight = 280;
+  static const int Infowindowwidth = 720;
+  static const int Infowindowheight = 405;
 
   void create_info_window();
 
