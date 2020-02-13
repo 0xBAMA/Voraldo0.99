@@ -151,16 +151,13 @@ voraldo::~voraldo()
   SDL_Delay(30);
 
   exit_splashBMP = SDL_LoadBMP(exit_splash_path.c_str());
-  if (exit_splashBMP == NULL)  cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
-
   exit_splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, exit_splashBMP);
-  SDL_FreeSurface(exit_splashBMP); //free that surface
-  if (exit_splash == NULL) cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
 
   SDL_RenderClear(SDL_2D_renderer); //clear our background
-
   SDL_RenderCopy(SDL_2D_renderer, exit_splash, &SrcRect, &DestRect);  //blit the image to the window
   SDL_RenderPresent(SDL_2D_renderer); //swap buffers so that this most recently drawn material is shown to the user
+
+  SDL_FreeSurface(exit_splashBMP); //free that surface
   SDL_DestroyRenderer(SDL_2D_renderer);
 
   SDL_Delay(1200);  //hold for some period of time to show the exit splash
@@ -244,29 +241,23 @@ void voraldo::sdl_ttf_init()
 void voraldo::create_info_window()
 {
 
-  Informational_window = SDL_CreateWindow("Hello World!", 10, 100, 720, 405, SDL_WINDOW_OPENGL);
-  if (Informational_window == NULL) cerr << "SDL_CreateWindow Error: " << SDL_GetError() << endl;
-
+  Informational_window = SDL_CreateWindow("Voraldo", 10, 100, 720, 405, SDL_WINDOW_OPENGL);
   SDL_2D_renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-  if (SDL_2D_renderer == NULL) cerr << "SDL_CreateRenderer Error" << SDL_GetError() << endl;
 
   splashBMP = SDL_LoadBMP(splash_path.c_str());
-  if (splashBMP == NULL) cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
-
   splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, splashBMP);  SDL_FreeSurface(splashBMP);
-  if (splash == NULL) cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
 
   SDL_RenderCopy(SDL_2D_renderer, splash, &SrcRect, &DestRect);
   SDL_RenderPresent(SDL_2D_renderer); //swap buffers so that this most recently drawn material is shown to the user
 
-  SDL_Delay(2000);
+  SDL_Delay(1500);
 
   SDL_RenderClear(SDL_2D_renderer); //clear our background
 
-  font_test();
+  font_test();  //test the fonts
 
   SDL_RenderPresent(SDL_2D_renderer); //swap buffers
-  SDL_Delay(1000);
+  SDL_Delay(1500);
 }
 
 void voraldo::font_test()
