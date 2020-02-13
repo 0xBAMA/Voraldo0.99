@@ -182,6 +182,8 @@ private:
 //  ║  │ ││││││││ ││││  ╚═╗ ║║║    └─┐ │ │ │├┤ ├┤
 //  ╚═╝└─┘┴ ┴┴ ┴└─┘┘└┘  ╚═╝═╩╝╩═╝  └─┘ ┴ └─┘└  └
 
+  int total_screen_width, total_screen_height;
+
   SDL_Rect SrcRect  = {0,0,720,405};   //where are we taking pixels from when we load the splash screen
   SDL_Rect DestRect = {0,0,720,405};  //where are we putting the pixels we took from SrcRect?
 
@@ -216,8 +218,9 @@ private:
   SDL_Window * OpenGL_window;
   SDL_GLContext GLcontext;
 
-  static const int windowwidth = 1200;
-  static const int windowheight = 700;
+  //I want to split the screen into three sections so I need to read out screen resolution
+  static const int windowwidth = 1016;
+  static const int windowheight = 768;
 
   void create_gl_window();
 
@@ -229,7 +232,7 @@ private:
   //this window will display images using the SDL 2d renderer, as well as buttons
   SDL_Window * Informational_window;
 
-  static const int Infowindowwidth = 720;
+  static const int Infowindowwidth = 500;
   static const int Infowindowheight = 405;
 
   void create_info_window();

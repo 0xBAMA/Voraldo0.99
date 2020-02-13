@@ -203,8 +203,20 @@ int voraldo::main_loop()
 
 void voraldo::startup_info_dump()
 {
+  //this is how you query the screen resolution
+  SDL_DisplayMode dm;
+  SDL_GetDesktopDisplayMode(0, &dm);
+
+  //pulling these out because I'm going to try to span the whole screen with
+  //the windows, without overlaps if possible, in a way that's flexible
+  total_screen_width = dm.w;
+  total_screen_height = dm.h;
+
+
   cout << " Running on " << std::string(SDL_GetPlatform()) << endl;
-  cout << " Number of logical CPU cores: " << SDL_GetCPUCount() << endl;
+  cout << " Screen resolution is: " << total_screen_width << " by " << total_screen_height << endl;
+
+  cout << " Logical CPU cores: " << SDL_GetCPUCount() << endl;
   cout << " System RAM: " << SDL_GetSystemRAM() << " MB" << endl;
 
   int secs, pct;
@@ -254,16 +266,18 @@ void voraldo::create_gl_window()
 
 
 
-  OpenGL_window = SDL_CreateWindow( "OpenGL Window", 200, 0, windowwidth, windowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+  OpenGL_window = SDL_CreateWindow( "OpenGL Window", total_screen_width/3, 0, 2*(total_screen_width/3), total_screen_height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
   GLcontext = SDL_GL_CreateContext( OpenGL_window );
 
+  SDL_MaximizeWindow(OpenGL_window);
+  SDL_Delay(300);
   SDL_SetWindowBordered(OpenGL_window, SDL_FALSE);
 
   //DEBUG
   glEnable              ( GL_DEBUG_OUTPUT );
   glDebugMessageCallback( MessageCallback, 0 );
 
-  glClearColor( 0.6, 0.16, 0.0, 1.0 );
+  glClearColor( 0.26, 0.16, 0.0, 1.0 );
   glClear( GL_COLOR_BUFFER_BIT );
   SDL_GL_SwapWindow( OpenGL_window );
 
@@ -285,8 +299,12 @@ void voraldo::sdl_ttf_init()
 
 void voraldo::create_info_window()
 {
-  Informational_window = SDL_CreateWindow("Voraldo", 10, 100, 720, 405, SDL_WINDOW_OPENGL);
+  Informational_window = SDL_CreateWindow("Voraldo", 0, 0, total_screen_width/3, 2*(total_screen_height/3), SDL_WINDOW_OPENGL);
   SDL_2D_renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+  SDL_SetWindowBordered(Informational_window, SDL_FALSE);
+
+  // SDL_RaiseWindow(Informational_window);  //this puts the window in focus, and on top - maybe useful at some point
 
   splashBMP = SDL_LoadBMP(splash_path.c_str());
   splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, splashBMP);  SDL_FreeSurface(splashBMP);
@@ -302,6 +320,7 @@ void voraldo::create_info_window()
 
   SDL_RenderPresent(SDL_2D_renderer); //swap buffers
   SDL_Delay(1500);
+
 }
 
 void voraldo::font_test()
