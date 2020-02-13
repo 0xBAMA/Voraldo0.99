@@ -150,10 +150,10 @@ voraldo::~voraldo()
 
   SDL_Delay(30);
 
-  exit_splashBMP = SDL_LoadBMP(exit_splash_path);
+  exit_splashBMP = SDL_LoadBMP(exit_splash_path.c_str());
   if (exit_splashBMP == NULL)  cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
 
-  exit_splash = SDL_CreateTextureFromSurface(renderer, exit_splashBMP);
+  exit_splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, exit_splashBMP);
   SDL_FreeSurface(exit_splashBMP); //free that surface
   if (exit_splash == NULL) cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << endl;
 
@@ -234,8 +234,8 @@ void voraldo::sdl_ttf_init()
 {
   //initialize the text engine, load a local .ttf file, report error if neccesary
   if( TTF_Init() == -1 )  cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << endl;
-  // TTF_Font *font = TTF_OpenFont( "resources/fonts/Braciola MS.ttf", 12 );
-  font = TTF_OpenFont( "resources/fonts/SquareDotDigital7-Dpv9.ttf", 18 );
+  font = TTF_OpenFont( "resources/fonts/Braciola MS.ttf", 14 );
+  // font = TTF_OpenFont( "resources/fonts/SquareDotDigital7-Dpv9.ttf", 16 );
 
   if(font == NULL) cout << "loading failed" << endl;
 }
@@ -250,7 +250,7 @@ void voraldo::create_info_window()
   SDL_2D_renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
   if (SDL_2D_renderer == NULL) cerr << "SDL_CreateRenderer Error" << SDL_GetError() << endl;
 
-  splashBMP = SDL_LoadBMP(splash_path);
+  splashBMP = SDL_LoadBMP(splash_path.c_str());
   if (splashBMP == NULL) cerr << "SDL_LoadBMP Error: " << SDL_GetError() << endl;
 
   splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, splashBMP);  SDL_FreeSurface(splashBMP);
@@ -263,51 +263,28 @@ void voraldo::create_info_window()
 
   SDL_RenderClear(SDL_2D_renderer); //clear our background
 
-
-
-
-
-
-//then we run a test of the font engine, SDL_ttf
-
-
-
-
-
-
-  //everything to render one string
-  SDL_Color clrFg1 = {255,0,255};
-  //note this bit on the next line doesn't work - line breaks are ignored by SDL_ttf's SDL_2D_renderer
-  std::string blep("This is some example text. This is the second line.  And the third.");
-  SDL_Surface * sText1 = TTF_RenderText_Solid( font, blep.c_str(), clrFg1 );
-  SDL_Texture * message1 = SDL_CreateTextureFromSurface( SDL_2D_renderer, sText1 );
-  int wid = sText1->w;
-  int hei = sText1->h;
-
-  SDL_Rect renderQuad = { 10, 10, wid, hei };
-  SDL_RenderCopy( SDL_2D_renderer, message1, NULL, &renderQuad );
-  SDL_FreeSurface( sText1 );
-  SDL_DestroyTexture( message1 );
-
-
-
-
-
-  //render a second string
-  SDL_Color clrFg2 = {255,255,0};
-  std::string blep2("second string");
-  SDL_Surface * sText2 = TTF_RenderText_Solid( font, blep2.c_str(), clrFg2 );
-  SDL_Texture * message2 = SDL_CreateTextureFromSurface( SDL_2D_renderer, sText2 );
-  wid = sText2->w;
-  hei = sText2->h;
-
-  renderQuad = { 10, 25, wid, hei };
-  SDL_RenderCopy( SDL_2D_renderer, message2, NULL, &renderQuad );
-  SDL_FreeSurface( sText2 );
-  SDL_DestroyTexture( message2 );
-
-
+  font_test();
 
   SDL_RenderPresent(SDL_2D_renderer); //swap buffers
   SDL_Delay(1000);
+}
+
+void voraldo::font_test()
+{
+  ttf_string("TESTING FONTS testing fonts - The quick brown fox etc etc 0123456789", 10, 10, 206, 143, 0);
+}
+
+void voraldo::ttf_string(std::string s, int basex, int basey, unsigned char r, unsigned char g, unsigned char b)
+{
+  SDL_Color col = {r, g, b};
+  SDL_Surface * message_surface = TTF_RenderText_Solid( font, s.c_str(), col );
+  SDL_Texture * message_text = SDL_CreateTextureFromSurface( SDL_2D_renderer, message_surface );
+
+  int wid = message_surface->w;
+  int hei = message_surface->h;
+
+  SDL_Rect renderQuad = { basex, basey, wid, hei };
+  SDL_RenderCopy( SDL_2D_renderer, message_text, NULL, &renderQuad );
+  SDL_FreeSurface( message_surface );
+  SDL_DestroyTexture( message_text );
 }

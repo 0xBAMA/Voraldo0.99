@@ -187,6 +187,11 @@ private:
   void sdl_ttf_init();               //set up the font and everything
   TTF_Font *font;                   //the loaded font
 
+
+  void font_test();
+  void ttf_string(std::string s, int basex, int basey, unsigned char r, unsigned char g, unsigned char b);
+
+
   SDL_Renderer* SDL_2D_renderer;
 
   std::string splash_path = std::string("resources/splash.bmp");
@@ -197,6 +202,8 @@ private:
   std::string exit_splash_path = std::string("resources/exit_splash.bmp");
   SDL_Texture* exit_splash;   //this is the ending splash screen (could just do it with SDL_ttf)
   SDL_Surface* exit_splashBMP;
+
+
 
 
 
