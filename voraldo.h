@@ -178,14 +178,22 @@ private:
   int main_loop();
   void startup_info_dump();
 
+  void draw_menu(int levels_deep);
+
 //  ╔╦╗┌─┐┌┐┌┬ ┬  ╦ ╦┌─┐┌┐┌┌┬┐┬  ┬┌┐┌┌─┐
 //  ║║║├┤ ││││ │  ╠═╣├─┤│││ │││  │││││ ┬
 //  ╩ ╩└─┘┘└┘└─┘  ╩ ╩┴ ┴┘└┘─┴┘┴─┘┴┘└┘└─┘
 
   typedef enum menu_state_t
   {
-    MAIN_MENU = 0,    //top level menu - go to this from the splash
-    DRAW_MENU = 1
+    MAIN_MENU,    //top level menu - go to this from the splash
+
+    DRAW_MENU,    //first level submenus
+    MASK_MENU,
+    UTIL_MENU
+
+    //primitive config submenus
+    
     //...
   } menu_state;
 

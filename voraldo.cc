@@ -122,6 +122,8 @@ voraldo::voraldo()
 {
   SDL_Init( SDL_INIT_EVERYTHING );
 
+  current_menu_state = MAIN_MENU;
+
   cout << endl << endl << "info dump:" << endl;
   startup_info_dump();
 
@@ -250,6 +252,38 @@ void voraldo::startup_info_dump()
   cout << endl << endl;
 
 }
+
+void voraldo::draw_menu()
+{
+  //draw the background
+  switch(current_menu_state)
+  {
+    case MAIN_MENU: //top level menu - drawing one rectangle
+      break;
+
+    case DRAW_MENU: //first level submenus - drawing two rectangles
+    case MASK_MENU:
+    case UTIL_MENU:
+      break;
+
+    //second level submenus - drawing three rectangles
+
+    default:
+      break;
+  }
+
+
+  //then after that, put the text in, as relevant
+
+  switch(current_menu_state)  //somewhat redundant, but I think it makes more sense
+  {                          //to group the rectangle drawing routines independently
+
+    default:
+      break;
+
+  }
+}
+
 
 
 void voraldo::create_gl_window()
