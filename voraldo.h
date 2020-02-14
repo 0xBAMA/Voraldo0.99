@@ -175,9 +175,9 @@ public:
 
 private:
 
-  int main_loop();
   void startup_info_dump();
 
+  void take_input();
   void draw_menu();
 
 //  ╔╦╗┌─┐┌┐┌┬ ┬  ╦ ╦┌─┐┌┐┌┌┬┐┬  ┬┌┐┌┌─┐
@@ -190,7 +190,9 @@ private:
 
     DRAW_MENU,    //first level submenus
     MASK_MENU,
-    UTIL_MENU
+    UTIL_MENU,
+
+    SPHERE_CONFIG
 
     //primitive config submenus
 
@@ -198,6 +200,7 @@ private:
   } menu_state;
 
   menu_state current_menu_state;  //so we know where we are when handling new input
+  bool quit;
 
 //  ╔═╗┌─┐┌┬┐┌┬┐┌─┐┌┐┌  ╔═╗╔╦╗╦    ┌─┐┌┬┐┬ ┬┌─┐┌─┐
 //  ║  │ ││││││││ ││││  ╚═╗ ║║║    └─┐ │ │ │├┤ ├┤
@@ -240,8 +243,8 @@ private:
   SDL_GLContext GLcontext;
 
   //I want to split the screen into three sections so I need to read out screen resolution
-  static const int windowwidth = 1016;
-  static const int windowheight = 768;
+  int windowwidth;
+  int windowheight;
 
   void create_gl_window();
 
@@ -253,8 +256,8 @@ private:
   //this window will display images using the SDL 2d renderer, as well as buttons
   SDL_Window * Informational_window;
 
-  static const int Infowindowwidth = 500;
-  static const int Infowindowheight = 405;
+  int Infowindowwidth;
+  int Infowindowheight;
 
   void create_info_window();
 

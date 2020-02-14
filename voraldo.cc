@@ -122,7 +122,9 @@ voraldo::voraldo()
 {
   SDL_Init( SDL_INIT_EVERYTHING );
 
-  current_menu_state = MAIN_MENU; //initial state of the menu
+  // current_menu_state = MAIN_MENU; //initial state of the menu
+  current_menu_state =  UTIL_MENU; //initial state of the menu
+  quit = false;
 
   cout << endl << endl << "info dump:" << endl;
   startup_info_dump();
@@ -140,13 +142,32 @@ voraldo::voraldo()
   //todo
 
   cout << "entering main loop" << endl;
-  while(1)
+
+  while(!quit)
   {
-    if(!main_loop())
-    {
-      break;
-    }
+    SDL_RenderClear(SDL_2D_renderer); //clear our background
+
+    take_input();
+    draw_menu();
+
+    SDL_RenderPresent(SDL_2D_renderer); //swap buffers
+
+    SDL_Delay(16);
   }
+
+  // //in order to handle buttons, we're going to check the event's windowid,
+  // //event.button.windowID against the Informational_window id, which is acquired with
+  //
+  // //   Uint32 SDL_GetWindowID(SDL_Window* window)
+  //
+  ////might want to mess with this eventually, to grab focus
+  //
+  //   // SDL_ShowWindow(Informational_window);
+  //   // SDL_ShowWindow(OpenGL_window);
+  //
+  //   // SDL_RaiseWindow(Informational_window);
+  //   // SDL_RaiseWindow(OpenGL_window);
+
 }
 
 
@@ -176,30 +197,60 @@ voraldo::~voraldo()
 }
 
 
-int voraldo::main_loop()
+void voraldo::take_input()
 {
-  //in order to handle buttons, we're going to check the event's windowid,
-  //event.button.windowID against the Informational_window id, which is acquired with
-
-  //   Uint32 SDL_GetWindowID(SDL_Window* window)
-
   SDL_Event event;
   while( SDL_PollEvent( &event ) )
   {
-    switch( event.type )
-    {
-      case SDL_KEYUP:
-        if( event.key.keysym.sym == SDLK_ESCAPE )
-        {
-          cout << "GOODBYE" << endl;
-          return 0;
-        }
-        break;
+      switch( event.type )
+      {
+        case SDL_KEYUP:
+          //handle input from keyboard
+          switch( event.key.keysym.sym )
+          {
+            case SDLK_ESCAPE:
+              cout << "GOODBYE" << endl;
+              quit = true;
+              break;
 
-      default:
-        return 1;
-        break;
-    }
+            case SDLK_UP:
+
+              break;
+
+
+
+            case SDLK_1:
+              current_menu_state = MAIN_MENU;
+              break;
+
+
+            case SDLK_2:
+
+              current_menu_state = DRAW_MENU;
+              break;
+
+
+            case SDLK_3:
+
+              current_menu_state = MASK_MENU;
+              break;
+
+
+            case SDLK_4:
+              current_menu_state = UTIL_MENU;
+
+              break;
+
+            case SDLK_5:
+              current_menu_state = SPHERE_CONFIG;
+              break;
+          }
+
+          break;
+
+        default:
+          break;
+      }
   }
 }
 
@@ -255,36 +306,102 @@ void voraldo::startup_info_dump()
 
 void voraldo::draw_menu()
 {
-  //draw the background
-  switch(current_menu_state)
+  SDL_Rect s;
+
+  // case DRAW_MENU: //first level submenus - drawing two rectangles
+  // case MASK_MENU:
+  // case UTIL_MENU:
+
+  // SDL_SetRenderDrawColor(SDL_2D_renderer, 100, 100, 255, 255); //this is a good blue
+
+  if (current_menu_state == MAIN_MENU)
+  {//highlighted color
+    SDL_SetRenderDrawColor(SDL_2D_renderer, 128, 125, 110, 255);
+  }
+  else if(current_menu_state == MASK_MENU || current_menu_state == DRAW_MENU || current_menu_state == UTIL_MENU)
   {
-    case MAIN_MENU: //top level menu - drawing one rectangle
-      break;
-
-    case DRAW_MENU: //first level submenus - drawing two rectangles
-    case MASK_MENU:
-    case UTIL_MENU:
-      break;
-
-    //second level submenus - drawing three rectangles
-
-    default:
-      break;
+    //somewhat dimmed
+    SDL_SetRenderDrawColor(SDL_2D_renderer, 100, 100, 100, 255);
+  }
+  else
+  {
+    //somewhat more dimmed
+    SDL_SetRenderDrawColor(SDL_2D_renderer, 75, 75, 75, 255);
   }
 
+  //draw the main menu box with whatever color is set
+  s = {5,5,Infowindowwidth - 30,Infowindowheight - 50};
+  SDL_RenderFillRect(SDL_2D_renderer, &s);
 
-  //then after that, put the text in, as relevant
+  //border is the same whatever the case
+  SDL_SetRenderDrawColor(SDL_2D_renderer, 50, 50, 50, 255);
+  SDL_RenderDrawRect(SDL_2D_renderer, &s);
 
-  switch(current_menu_state)  //somewhat redundant, but I think it makes more sense
-  {                          //to group the rectangle drawing routines independently
+  //this top bit will always be the main menu - so the label can be static
+  ttf_string("Main Menu", 9, 5, 0, 0, 0);
+
+
+
+
+  if(current_menu_state != MAIN_MENU)
+  {
+    s = {10,22,Infowindowwidth - 30,Infowindowheight - 50};
+
+
+    if(current_menu_state == MASK_MENU || current_menu_state == DRAW_MENU || current_menu_state == UTIL_MENU)
+    {
+      SDL_SetRenderDrawColor(SDL_2D_renderer, 128, 125, 110, 255);
+    }
+    else
+    { //this is called if a submenu of one of the big three is active (mask,main, or util are in bg)
+      SDL_SetRenderDrawColor(SDL_2D_renderer, 100, 100, 100, 255);
+    }
+
+    //draw with whatever color is set
+    SDL_RenderFillRect(SDL_2D_renderer, &s);
+    SDL_SetRenderDrawColor(SDL_2D_renderer, 50, 50, 50, 255);
+    SDL_RenderDrawRect(SDL_2D_renderer, &s);
+
+    switch(current_menu_state)
+    {
+      case MASK_MENU: //the mask submenus will also be part of this case
+
+        if(current_menu_state == MASK_MENU)
+          ttf_string("Mask Menu", 14, 22, 255, 51, 0);
+        else
+          ttf_string("Mask Menu", 14, 22, 0, 0, 0); //this is called when you have a submenu open
+        break;
+
+
+      case DRAW_MENU: //draw submenus will also be part of this case
+
+        if(current_menu_state == DRAW_MENU)
+          ttf_string("Draw Menu", 14, 22, 255, 51, 0);
+        else
+          ttf_string("Draw Menu", 14, 22, 0, 0, 0); //this is called when you have a submenu open
+        break;
+
+
+      case UTIL_MENU:
+        if(current_menu_state == UTIL_MENU)
+          ttf_string("Utility Menu", 14, 22, 255, 51, 0);
+        else
+          ttf_string("Utility Menu", 14, 22, 0, 0, 0); //this is called when you have a submenu open
+        break;
+    }
+  }
+
+  //second level submenus - drawing three rectangles
+
+
+  switch(current_menu_state)
+  {
 
     default:
       break;
 
   }
 }
-
-
 
 void voraldo::create_gl_window()
 {
@@ -302,14 +419,11 @@ void voraldo::create_gl_window()
   SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 5 );
   SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 
+  windowwidth = 2*(total_screen_width/3);
+  windowheight = total_screen_height;
 
-
-  OpenGL_window = SDL_CreateWindow( "OpenGL Window", total_screen_width/3, 0, 2*(total_screen_width/3), total_screen_height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+  OpenGL_window = SDL_CreateWindow( "OpenGL Window", total_screen_width/3, 0, windowwidth, windowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
   GLcontext = SDL_GL_CreateContext( OpenGL_window );
-
-  // SDL_MaximizeWindow(OpenGL_window);
-  SDL_Delay(300);
-  SDL_SetWindowBordered(OpenGL_window, SDL_FALSE);
 
   //DEBUG
   glEnable              ( GL_DEBUG_OUTPUT );
@@ -323,6 +437,30 @@ void voraldo::create_gl_window()
   // SDL_Delay(10);
 }
 
+void voraldo::create_info_window()
+{
+  Infowindowwidth = total_screen_width/3;
+  Infowindowheight = 2*(total_screen_height/3);
+
+  Informational_window = SDL_CreateWindow("Voraldo", 0, 0, Infowindowwidth, Infowindowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
+  SDL_2D_renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+  splashBMP = SDL_LoadBMP(splash_path.c_str());
+  splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, splashBMP);  SDL_FreeSurface(splashBMP);
+
+  SDL_RenderCopy(SDL_2D_renderer, splash, &SrcRect, &DestRect);
+  SDL_RenderPresent(SDL_2D_renderer); //swap buffers so that this most recently drawn material is shown to the user
+
+  SDL_Delay(500);
+
+  SDL_RenderClear(SDL_2D_renderer); //clear our background
+
+  font_test();  //test the fonts
+  draw_menu();    //testing the menu drawing routine
+
+  SDL_RenderPresent(SDL_2D_renderer); //swap buffers
+  SDL_Delay(500);
+}
 
 void voraldo::sdl_ttf_init()
 {
@@ -332,32 +470,6 @@ void voraldo::sdl_ttf_init()
   // font = TTF_OpenFont( "resources/fonts/SquareDotDigital7-Dpv9.ttf", 16 );
 
   if(font == NULL) cout << "loading failed" << endl;
-}
-
-
-void voraldo::create_info_window()
-{
-  Informational_window = SDL_CreateWindow("Voraldo", 0, 0, total_screen_width/3, 2*(total_screen_height/3), SDL_WINDOW_OPENGL);
-  SDL_2D_renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-  SDL_SetWindowBordered(Informational_window, SDL_FALSE);
-
-  // SDL_RaiseWindow(Informational_window);  //this puts the window in focus, and on top - maybe useful at some point
-
-  splashBMP = SDL_LoadBMP(splash_path.c_str());
-  splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, splashBMP);  SDL_FreeSurface(splashBMP);
-
-  SDL_RenderCopy(SDL_2D_renderer, splash, &SrcRect, &DestRect);
-  SDL_RenderPresent(SDL_2D_renderer); //swap buffers so that this most recently drawn material is shown to the user
-
-  SDL_Delay(1500);
-
-  SDL_RenderClear(SDL_2D_renderer); //clear our background
-
-  font_test();  //test the fonts
-
-  SDL_RenderPresent(SDL_2D_renderer); //swap buffers
-  SDL_Delay(1500);
 }
 
 void voraldo::font_test()
@@ -384,4 +496,8 @@ void voraldo::ttf_string(std::string s, int basex, int basey, unsigned char r, u
   SDL_RenderCopy( SDL_2D_renderer, message_text, NULL, &renderQuad );
   SDL_FreeSurface( message_surface );
   SDL_DestroyTexture( message_text );
+
+  //for the little animation dealio
+  // SDL_RenderPresent(SDL_2D_renderer); //swap buffers
+  // SDL_Delay(45);
 }
