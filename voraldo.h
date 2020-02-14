@@ -184,12 +184,12 @@ private:
 
   typedef enum menu_state_t
   {
-    MAIN_MENU = 0,
+    MAIN_MENU = 0,    //top level menu - go to this from the splash
     DRAW_MENU = 1
     //...
   } menu_state;
 
-  menu_state current_menu_state;  //so we know where we are
+  menu_state current_menu_state;  //so we know where we are when handling new input
 
 //  ╔═╗┌─┐┌┬┐┌┬┐┌─┐┌┐┌  ╔═╗╔╦╗╦    ┌─┐┌┬┐┬ ┬┌─┐┌─┐
 //  ║  │ ││││││││ ││││  ╚═╗ ║║║    └─┐ │ │ │├┤ ├┤
