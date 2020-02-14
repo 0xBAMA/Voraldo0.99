@@ -178,7 +178,7 @@ private:
   int main_loop();
   void startup_info_dump();
 
-  void draw_menu(int levels_deep);
+  void draw_menu();
 
 //  ╔╦╗┌─┐┌┐┌┬ ┬  ╦ ╦┌─┐┌┐┌┌┬┐┬  ┬┌┐┌┌─┐
 //  ║║║├┤ ││││ │  ╠═╣├─┤│││ │││  │││││ ┬
@@ -193,7 +193,7 @@ private:
     UTIL_MENU
 
     //primitive config submenus
-    
+
     //...
   } menu_state;
 

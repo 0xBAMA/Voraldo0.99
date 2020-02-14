@@ -122,7 +122,7 @@ voraldo::voraldo()
 {
   SDL_Init( SDL_INIT_EVERYTHING );
 
-  current_menu_state = MAIN_MENU;
+  current_menu_state = MAIN_MENU; //initial state of the menu
 
   cout << endl << endl << "info dump:" << endl;
   startup_info_dump();
