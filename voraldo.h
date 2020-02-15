@@ -211,8 +211,8 @@ private:
   SDL_Rect SrcRect  = {0,0,720,405};   //where are we taking pixels from when we load the splash screen
   SDL_Rect DestRect = {0,0,720,405};  //where are we putting the pixels we took from SrcRect?
 
-  void sdl_ttf_init();               //set up the font and everything
-  TTF_Font *font;                   //the loaded font
+  void sdl_ttf_init();              //set up the font and everything
+  TTF_Font *font;                  //the loaded font
 
 
   void font_test();

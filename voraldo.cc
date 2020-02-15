@@ -248,6 +248,12 @@ void voraldo::take_input()
 
           break;
 
+        //mouse events
+
+        //other events
+
+        // ...
+
         default:
           break;
       }
