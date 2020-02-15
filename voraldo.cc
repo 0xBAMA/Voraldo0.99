@@ -389,18 +389,30 @@ void voraldo::draw_menu()
           ttf_string("Utility Menu", 14, 22, 0, 0, 0); //this is called when you have a submenu open
         break;
     }
+
+    //if it's not level two, it's level three
+    if(!(current_menu_state == MASK_MENU || current_menu_state == DRAW_MENU || current_menu_state == UTIL_MENU))
+    {
+      s = {15,39,Infowindowwidth - 30,Infowindowheight - 50};
+
+      SDL_SetRenderDrawColor(SDL_2D_renderer, 128, 125, 110, 255);
+      SDL_RenderFillRect(SDL_2D_renderer, &s);
+      SDL_SetRenderDrawColor(SDL_2D_renderer, 50, 50, 50, 255);
+      SDL_RenderDrawRect(SDL_2D_renderer, &s);
+    }
+
   }
 
   //second level submenus - drawing three rectangles
 
 
-  switch(current_menu_state)
-  {
-
-    default:
-      break;
-
-  }
+  // switch(current_menu_state)
+  // {
+  //
+  //   default:
+  //     break;
+  //
+  // }
 }
 
 void voraldo::create_gl_window()
@@ -440,26 +452,27 @@ void voraldo::create_gl_window()
 void voraldo::create_info_window()
 {
   Infowindowwidth = total_screen_width/3;
-  Infowindowheight = 2*(total_screen_height/3);
+  Infowindowheight = total_screen_height;
 
   Informational_window = SDL_CreateWindow("Voraldo", 0, 0, Infowindowwidth, Infowindowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
   SDL_2D_renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-  splashBMP = SDL_LoadBMP(splash_path.c_str());
-  splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, splashBMP);  SDL_FreeSurface(splashBMP);
+  // splashBMP = SDL_LoadBMP(splash_path.c_str());
+  // splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, splashBMP);
+  // SDL_FreeSurface(splashBMP);
 
-  SDL_RenderCopy(SDL_2D_renderer, splash, &SrcRect, &DestRect);
-  SDL_RenderPresent(SDL_2D_renderer); //swap buffers so that this most recently drawn material is shown to the user
+  // SDL_RenderCopy(SDL_2D_renderer, splash, &SrcRect, &DestRect);
+  // SDL_RenderPresent(SDL_2D_renderer); //swap buffers so that this most recently drawn material is shown to the user
 
-  SDL_Delay(500);
+  // SDL_Delay(500);
 
-  SDL_RenderClear(SDL_2D_renderer); //clear our background
+  // SDL_RenderClear(SDL_2D_renderer); //clear our background
 
-  font_test();  //test the fonts
-  draw_menu();    //testing the menu drawing routine
+  // font_test();     //test the fonts
+  // draw_menu();    //testing the menu drawing routine
 
-  SDL_RenderPresent(SDL_2D_renderer); //swap buffers
-  SDL_Delay(500);
+  // SDL_RenderPresent(SDL_2D_renderer); //swap buffers
+  // SDL_Delay(500);
 }
 
 void voraldo::sdl_ttf_init()
@@ -467,7 +480,7 @@ void voraldo::sdl_ttf_init()
   //initialize the text engine, load a local .ttf file, report error if neccesary
   if( TTF_Init() == -1 )  cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << endl;
   font = TTF_OpenFont( "resources/fonts/Braciola MS.ttf", 14 );
-  // font = TTF_OpenFont( "resources/fonts/SquareDotDigital7-Dpv9.ttf", 16 );
+  // font = TTF_OpenFont( "resources/fonts/SquareDotDigital7-Dpv9.ttf", 20 );
 
   if(font == NULL) cout << "loading failed" << endl;
 }
