@@ -1,4 +1,4 @@
-#VORALDO 1.0 - The Culmination of 9 Versions of This Project
+# VORALDO 1.0 - The Culmination of 9 Versions of This Project
 
 
 1 - ditch the splash screen image from before
