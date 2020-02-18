@@ -170,7 +170,6 @@ voraldo::voraldo()
 
 }
 
-
 voraldo::~voraldo()
 {
   SDL_GL_DeleteContext( GLcontext );
@@ -195,7 +194,6 @@ voraldo::~voraldo()
   SDL_DestroyWindow( Informational_window );
   SDL_Quit();
 }
-
 
 void voraldo::take_input()
 {
@@ -515,8 +513,16 @@ void voraldo::create_info_window()
 
   SDL_RenderPresent(SDL_2D_renderer); //swap buffers
 
-  SDL_Delay(2500);
 
+  SDL_Event event;
+
+  while(1)
+  {
+    SDL_PollEvent(&event);
+
+    if(event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_RETURN)
+      break;
+  }
 
 
 
