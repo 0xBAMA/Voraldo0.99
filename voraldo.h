@@ -175,7 +175,8 @@ public:
 
 private:
 
-  void startup_info_dump();
+  void collect_startup_info();
+  std::vector<std::string> startup_info;
 
   void take_input();
   void draw_menu();
@@ -192,9 +193,9 @@ private:
     MASK_MENU,
     UTIL_MENU,
 
+    //primitive config submenus
     SPHERE_CONFIG
 
-    //primitive config submenus
 
     //...
   } menu_state;

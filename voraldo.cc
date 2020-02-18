@@ -122,12 +122,11 @@ voraldo::voraldo()
 {
   SDL_Init( SDL_INIT_EVERYTHING );
 
-  // current_menu_state = MAIN_MENU; //initial state of the menu
-  current_menu_state =  UTIL_MENU; //initial state of the menu
+  current_menu_state = MAIN_MENU; //initial state of the menu
   quit = false;
 
   cout << endl << endl << "info dump:" << endl;
-  startup_info_dump();
+  collect_startup_info();
 
   cout << "setting up ttf font rendering" << endl;
   sdl_ttf_init();
@@ -137,6 +136,7 @@ voraldo::voraldo()
 
   cout << "creating info window" << endl;
   create_info_window();
+
 
   cout << "initializing voraldo components" << endl;
   //todo
@@ -176,19 +176,19 @@ voraldo::~voraldo()
   SDL_GL_DeleteContext( GLcontext );
   SDL_DestroyWindow( OpenGL_window );
 
-  SDL_Delay(30);
+  // SDL_Delay(30);
 
   exit_splashBMP = SDL_LoadBMP(exit_splash_path.c_str());
   exit_splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, exit_splashBMP);
 
-  SDL_RenderClear(SDL_2D_renderer); //clear our background
-  SDL_RenderCopy(SDL_2D_renderer, exit_splash, &SrcRect, &DestRect);  //blit the image to the window
-  SDL_RenderPresent(SDL_2D_renderer); //swap buffers so that this most recently drawn material is shown to the user
+  // SDL_RenderClear(SDL_2D_renderer); //clear our background
+  // SDL_RenderCopy(SDL_2D_renderer, exit_splash, &SrcRect, &DestRect);  //blit the image to the window
+  // SDL_RenderPresent(SDL_2D_renderer); //swap buffers so that this most recently drawn material is shown to the user
 
   SDL_FreeSurface(exit_splashBMP); //free that surface
   SDL_DestroyRenderer(SDL_2D_renderer);
 
-  SDL_Delay(1200);  //hold for some period of time to show the exit splash
+  // SDL_Delay(1200);  //hold for some period of time to show the exit splash
 
   TTF_CloseFont( font );
 
@@ -260,10 +260,8 @@ void voraldo::take_input()
   }
 }
 
-void voraldo::startup_info_dump()
+void voraldo::collect_startup_info()
 {
-
-  cout << " Program launched from: " << SDL_GetBasePath() << endl;
 
 
   //this is how you query the screen resolution
@@ -275,36 +273,78 @@ void voraldo::startup_info_dump()
   total_screen_width = dm.w;
   total_screen_height = dm.h;
 
+  std::stringstream m;
 
+
+  //PATH
+  cout << " Program launched from: " << SDL_GetBasePath() << endl;
+  m << " Program launched from: " << SDL_GetBasePath() << endl;
+
+  startup_info.push_back(m.str());  //get the path on the info vector
+  std::stringstream().swap(m);     //swap m with a default constructed stringstream to clear
+
+  //PLATFORM
   cout << " Running on " << std::string(SDL_GetPlatform()) << endl;
+  m << " Running on " << std::string(SDL_GetPlatform()) << endl;
+
+  startup_info.push_back(m.str());  //get the path on the info vector
+  std::stringstream().swap(m);     //swap m with a default constructed stringstream to clear
+
+  //SCREEN RESOLUTION
   cout << " Screen resolution is: " << total_screen_width << " by " << total_screen_height << endl;
+  m << " Screen resolution is: " << total_screen_width << " by " << total_screen_height << endl;
 
+  startup_info.push_back(m.str());  //get the path on the info vector
+  std::stringstream().swap(m);     //swap m with a default constructed stringstream to clear
+
+
+  //LOGICAL CPUs (THREADS)
   cout << " Logical CPU cores: " << SDL_GetCPUCount() << endl;
-  cout << " System RAM: " << SDL_GetSystemRAM() << " MB" << endl;
+  m << " Logical CPU cores: " << SDL_GetCPUCount() << endl;
 
+  startup_info.push_back(m.str());  //get the path on the info vector
+  std::stringstream().swap(m);     //swap m with a default constructed stringstream to clear
+
+
+  //SYSTEM RAM
+  cout << " System RAM: " << SDL_GetSystemRAM() << " MB" << endl;
+  m << " System RAM: " << SDL_GetSystemRAM() << " MB" << endl;
+
+  startup_info.push_back(m.str());  //get the path on the info vector
+  std::stringstream().swap(m);     //swap m with a default constructed stringstream to clear
+
+  //BATTERY INFO
   int secs, pct;
   switch (SDL_GetPowerInfo(&secs, &pct))
   {
     case SDL_POWERSTATE_UNKNOWN:
       cout << " Battery in undetermined state" << endl;
+      m << " Battery in undetermined state" << endl;
       break;
 
     case SDL_POWERSTATE_ON_BATTERY:
       cout << " Operating on battery - " << pct << " percent remaining, estimated " << secs << "seconds" << endl;
+      m << " Operating on battery - " << pct << " percent remaining, estimated " << secs << "seconds" << endl;
       break;
 
     case SDL_POWERSTATE_NO_BATTERY:
       cout << " No Battery Present" << endl;
+      m << " No Battery Present" << endl;
       break;
 
     case SDL_POWERSTATE_CHARGING:
       cout << " Battery is charging - " << pct << " percent" << endl;
+      m << " Battery is charging - " << pct << " percent" << endl;
       break;
 
     case SDL_POWERSTATE_CHARGED:
       cout << " Battery is fully charged" << endl;
+      m << " Battery is fully charged" << endl;
       break;
   }
+
+  startup_info.push_back(m.str());  //get the path on the info vector
+  std::stringstream().swap(m);     //swap m with a default constructed stringstream to clear
 
   cout << endl << endl;
 
