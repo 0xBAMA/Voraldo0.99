@@ -503,6 +503,31 @@ void voraldo::create_info_window()
   Informational_window = SDL_CreateWindow("Voraldo", 0, 0, Infowindowwidth, Infowindowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
   SDL_2D_renderer = SDL_CreateRenderer(Informational_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
+  SDL_SetRenderDrawColor(SDL_2D_renderer, 128, 125, 110, 255);
+  SDL_RenderClear(SDL_2D_renderer); //clear our background
+
+  ttf_string(startup_info[0], 10, 30, 200, 170, 0);
+  ttf_string(startup_info[1], 10, 50, 200, 170, 0);
+  ttf_string(startup_info[2], 10, 70, 200, 170, 0);
+  ttf_string(startup_info[3], 10, 90, 200, 170, 0);
+  ttf_string(startup_info[4], 10,110, 200, 170, 0);
+  ttf_string(startup_info[5], 10,130, 200, 170, 0);
+
+  SDL_RenderPresent(SDL_2D_renderer); //swap buffers
+
+  SDL_Delay(2500);
+
+
+
+
+
+
+
+
+
+
+
+
   // splashBMP = SDL_LoadBMP(splash_path.c_str());
   // splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, splashBMP);
   // SDL_FreeSurface(splashBMP);
