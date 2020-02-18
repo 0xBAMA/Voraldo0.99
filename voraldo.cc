@@ -504,12 +504,14 @@ void voraldo::create_info_window()
   SDL_SetRenderDrawColor(SDL_2D_renderer, 128, 125, 110, 255);
   SDL_RenderClear(SDL_2D_renderer); //clear our background
 
-  ttf_string(startup_info[0], 10, 30, 200, 170, 0);
-  ttf_string(startup_info[1], 10, 50, 200, 170, 0);
-  ttf_string(startup_info[2], 10, 70, 200, 170, 0);
-  ttf_string(startup_info[3], 10, 90, 200, 170, 0);
-  ttf_string(startup_info[4], 10,110, 200, 170, 0);
-  ttf_string(startup_info[5], 10,130, 200, 170, 0);
+  ttf_string(std::string("SYSTEM INFO:"), 10,30, 240, 190, 0);
+  ttf_string(startup_info[0], 10, 50, 200, 170, 0);
+  ttf_string(startup_info[1], 10, 70, 200, 170, 0);
+  ttf_string(startup_info[2], 10, 90, 200, 170, 0);
+  ttf_string(startup_info[3], 10,110, 200, 170, 0);
+  ttf_string(startup_info[4], 10,130, 200, 170, 0);
+  ttf_string(startup_info[5], 10,150, 200, 170, 0);
+  ttf_string(std::string("HIT ENTER TO CONTINUE..."), 10,180, 240, 190, 0);
 
   SDL_RenderPresent(SDL_2D_renderer); //swap buffers
 
