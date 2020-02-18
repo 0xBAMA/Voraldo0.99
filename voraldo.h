@@ -185,8 +185,12 @@ private:
 //  ║║║├┤ ││││ │  ╠═╣├─┤│││ │││  │││││ ┬
 //  ╩ ╩└─┘┘└┘└─┘  ╩ ╩┴ ┴┘└┘─┴┘┴─┘┴┘└┘└─┘
 
+
   typedef enum menu_state_t
   {
+    INVALID,
+    EXIT,
+
     MAIN_MENU,    //top level menu - go to this from the splash
 
     DRAW_MENU,    //first level submenus
@@ -201,7 +205,18 @@ private:
   } menu_state;
 
   menu_state current_menu_state;  //so we know where we are when handling new input
-  bool quit;
+
+  //overarching structure for the menu layout - labels and links
+  typedef struct menu_layout_t
+  {
+    std::vector<std::string> labels;
+    std::vector<menu_state> links;
+  } menu_layout;
+
+  void assemble_menu_layouts();
+  std::vector<menu_layout> menu;
+
+
 
 //  ╔═╗┌─┐┌┬┐┌┬┐┌─┐┌┐┌  ╔═╗╔╦╗╦    ┌─┐┌┬┐┬ ┬┌─┐┌─┐
 //  ║  │ ││││││││ ││││  ╚═╗ ║║║    └─┐ │ │ │├┤ ├┤

@@ -123,10 +123,12 @@ voraldo::voraldo()
   SDL_Init( SDL_INIT_EVERYTHING );
 
   current_menu_state = MAIN_MENU; //initial state of the menu
-  quit = false;
 
   cout << endl << endl << "info dump:" << endl;
   collect_startup_info();
+
+  cout << "populating menu options" << endl;
+  assemble_menu_layouts();
 
   cout << "setting up ttf font rendering" << endl;
   sdl_ttf_init();
@@ -143,12 +145,12 @@ voraldo::voraldo()
 
   cout << "entering main loop" << endl;
 
-  while(!quit)
+  while(current_menu_state != EXIT)
   {
     SDL_RenderClear(SDL_2D_renderer); //clear our background
 
-    take_input();
-    draw_menu();
+    draw_menu();    //do this first, so that we don't draw the wrong menu when we just entered the EXIT state
+    take_input();   //this is where any state changes are going to happen
 
     SDL_RenderPresent(SDL_2D_renderer); //swap buffers
 
@@ -208,7 +210,7 @@ void voraldo::take_input()
           {
             case SDLK_ESCAPE:
               cout << "GOODBYE" << endl;
-              quit = true;
+              current_menu_state = EXIT;
               break;
 
             case SDLK_UP:
@@ -347,6 +349,13 @@ void voraldo::collect_startup_info()
   cout << endl << endl;
 
 }
+
+void voraldo::assemble_menu_layouts()
+{
+  //this populates 'menu'
+
+}
+
 
 void voraldo::draw_menu()
 {
@@ -545,13 +554,6 @@ void voraldo::create_info_window()
 
   // SDL_Delay(500);
 
-  // SDL_RenderClear(SDL_2D_renderer); //clear our background
-
-  // font_test();     //test the fonts
-  // draw_menu();    //testing the menu drawing routine
-
-  // SDL_RenderPresent(SDL_2D_renderer); //swap buffers
-  // SDL_Delay(500);
 }
 
 void voraldo::sdl_ttf_init()
