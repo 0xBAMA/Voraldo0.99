@@ -185,6 +185,7 @@ private:
 //  ║║║├┤ ││││ │  ╠═╣├─┤│││ │││  │││││ ┬
 //  ╩ ╩└─┘┘└┘└─┘  ╩ ╩┴ ┴┘└┘─┴┘┴─┘┴┘└┘└─┘
 
+  #define NUM_STATES 7  //this is going to change as the number of states increases
 
   typedef enum menu_state_t
   {

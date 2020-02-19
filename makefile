@@ -4,6 +4,8 @@ VORALDO_FLAGS = $(shell pkg-config sdl2 --cflags --libs) -O3 -std=c++11 -lGLEW -
 all: msg main
 
 msg:
+		@echo
+		@echo
 		@echo 'Compiling starts on '
 		@date
 

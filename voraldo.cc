@@ -25,7 +25,7 @@ void GLAPIENTRY MessageCallback( GLenum source,
     fprintf( stderr, "        GL CALLBACK: %s type = 0x%x, severity = GL_DEBUG_SEVERITY_LOW, message = %s\n",
            ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ), type, message );
 
-  bool show_notification_severity = false;
+  bool show_notification_severity = true;
   if(severity == GL_DEBUG_SEVERITY_NOTIFICATION && show_notification_severity)
     fprintf( stderr, "        GL CALLBACK: %s type = 0x%x, severity = GL_DEBUG_SEVERITY_NOTIFICATION, message = %s\n",
            ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ), type, message );
@@ -139,11 +139,14 @@ voraldo::voraldo()
   cout << "creating info window" << endl;
   create_info_window();
 
-
   cout << "initializing voraldo components" << endl;
   //todo
 
   cout << "entering main loop" << endl;
+
+  //DEBUG ENABLE
+  glEnable              ( GL_DEBUG_OUTPUT );
+  glDebugMessageCallback( MessageCallback, 0 );
 
   while(current_menu_state != EXIT)
   {
@@ -154,9 +157,34 @@ voraldo::voraldo()
 
     SDL_RenderPresent(SDL_2D_renderer); //swap buffers
 
-    SDL_Delay(16);
+    SDL_Delay(10);
   }
 
+  cout << "dropping out of main loop" << endl;
+
+}
+
+voraldo::~voraldo()
+{
+  SDL_GL_DeleteContext( GLcontext );
+  SDL_DestroyWindow( OpenGL_window );
+
+  exit_splashBMP = SDL_LoadBMP(exit_splash_path.c_str());
+  exit_splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, exit_splashBMP);
+
+  SDL_FreeSurface(exit_splashBMP); //free that surface
+  SDL_DestroyRenderer(SDL_2D_renderer);
+
+  TTF_CloseFont( font );
+
+  SDL_DestroyWindow( Informational_window );
+  SDL_Quit();
+
+  cout << "GOODBYE" << endl << endl << endl; //last line of code before main's return statement
+}
+
+void voraldo::take_input()
+{
   // //in order to handle buttons, we're going to check the event's windowid,
   // //event.button.windowID against the Informational_window id, which is acquired with
   //
@@ -170,35 +198,6 @@ voraldo::voraldo()
   //   // SDL_RaiseWindow(Informational_window);
   //   // SDL_RaiseWindow(OpenGL_window);
 
-}
-
-voraldo::~voraldo()
-{
-  SDL_GL_DeleteContext( GLcontext );
-  SDL_DestroyWindow( OpenGL_window );
-
-  // SDL_Delay(30);
-
-  exit_splashBMP = SDL_LoadBMP(exit_splash_path.c_str());
-  exit_splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, exit_splashBMP);
-
-  // SDL_RenderClear(SDL_2D_renderer); //clear our background
-  // SDL_RenderCopy(SDL_2D_renderer, exit_splash, &SrcRect, &DestRect);  //blit the image to the window
-  // SDL_RenderPresent(SDL_2D_renderer); //swap buffers so that this most recently drawn material is shown to the user
-
-  SDL_FreeSurface(exit_splashBMP); //free that surface
-  SDL_DestroyRenderer(SDL_2D_renderer);
-
-  // SDL_Delay(1200);  //hold for some period of time to show the exit splash
-
-  TTF_CloseFont( font );
-
-  SDL_DestroyWindow( Informational_window );
-  SDL_Quit();
-}
-
-void voraldo::take_input()
-{
   SDL_Event event;
   while( SDL_PollEvent( &event ) )
   {
@@ -209,7 +208,6 @@ void voraldo::take_input()
           switch( event.key.keysym.sym )
           {
             case SDLK_ESCAPE:
-              cout << "GOODBYE" << endl;
               current_menu_state = EXIT;
               break;
 
@@ -353,9 +351,13 @@ void voraldo::collect_startup_info()
 void voraldo::assemble_menu_layouts()
 {
   //this populates 'menu'
+  menu.resize(NUM_STATES);
+
+  menu_layout m;
+
+  // m.labels.push_back();
 
 }
-
 
 void voraldo::draw_menu()
 {
@@ -490,9 +492,7 @@ void voraldo::create_gl_window()
   OpenGL_window = SDL_CreateWindow( "OpenGL Window", total_screen_width/3, 0, windowwidth, windowheight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
   GLcontext = SDL_GL_CreateContext( OpenGL_window );
 
-  //DEBUG
-  glEnable              ( GL_DEBUG_OUTPUT );
-  glDebugMessageCallback( MessageCallback, 0 );
+
 
   glClearColor( 0.26, 0.16, 0.0, 1.0 );
   glClear( GL_COLOR_BUFFER_BIT );
@@ -513,14 +513,14 @@ void voraldo::create_info_window()
   SDL_SetRenderDrawColor(SDL_2D_renderer, 128, 125, 110, 255);
   SDL_RenderClear(SDL_2D_renderer); //clear our background
 
-  ttf_string(std::string("SYSTEM INFO:"), 10,30, 240, 190, 0);
-  ttf_string(startup_info[0], 10, 50, 200, 170, 0);
-  ttf_string(startup_info[1], 10, 70, 200, 170, 0);
-  ttf_string(startup_info[2], 10, 90, 200, 170, 0);
-  ttf_string(startup_info[3], 10,110, 200, 170, 0);
-  ttf_string(startup_info[4], 10,130, 200, 170, 0);
-  ttf_string(startup_info[5], 10,150, 200, 170, 0);
-  ttf_string(std::string("HIT ENTER TO CONTINUE..."), 10,180, 240, 190, 0);
+  ttf_string(std::string("SYSTEM INFO:"), 10,90, 240, 190, 0);
+  ttf_string(startup_info[0], 10, 110, 200, 170, 0);
+  ttf_string(startup_info[1], 10, 130, 200, 170, 0);
+  ttf_string(startup_info[2], 10, 150, 200, 170, 0);
+  ttf_string(startup_info[3], 10, 170, 200, 170, 0);
+  ttf_string(startup_info[4], 10, 190, 200, 170, 0);
+  ttf_string(startup_info[5], 10, 210, 200, 170, 0);
+  ttf_string(std::string("HIT ENTER TO CONTINUE..."), 10,230, 240, 190, 0);
 
   SDL_RenderPresent(SDL_2D_renderer); //swap buffers
 
@@ -533,16 +533,13 @@ void voraldo::create_info_window()
 
     if(event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_RETURN)
       break;
+
+    if(event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE)
+    {
+      current_menu_state = EXIT;
+      break;
+    }
   }
-
-
-
-
-
-
-
-
-
 
 
   // splashBMP = SDL_LoadBMP(splash_path.c_str());
