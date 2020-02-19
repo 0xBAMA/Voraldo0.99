@@ -350,38 +350,129 @@ void voraldo::collect_startup_info()
 
 void voraldo::assemble_menu_layouts()
 {
-  //this populates 'menu'
+  //this function populates 'menu'
   menu.resize(NUM_STATES);
 
-  menu_layout m;
+  menu_state ms;
+  menu_layout ml;
 
-  // m.labels.push_back();
+  // //overarching structure for the menu layout - labels and links
+  // typedef struct menu_layout_t
+  // {
+  //   std::vector<std::string> labels;  //zero index is heading for this menu_state
+  //   std::vector<menu_state> links;    //zero index of links is parent
+  // } menu_layout;
 
+  for (int i = EXIT; i != INVALID; i++)
+  {
+    ms = static_cast<menu_state>(i);  //workaround to make iterating over an enum work
+    ml = menu_layout();              //reinitialize to zero out the vectors
+
+    switch(ms)
+    {
+      case EXIT:
+        //don't need any labels or links for this
+        break;
+
+
+      case MAIN_MENU:
+        ml.labels.push_back("MAIN MENU");
+        ml.links.push_back(EXIT);
+
+        ml.labels.push_back("  1: DRAW MENU");
+        ml.links.push_back(DRAW_MENU);
+
+        ml.labels.push_back("  2: MASK MENU");
+        ml.links.push_back(MASK_MENU);
+
+        ml.labels.push_back("  3: LIGHT MENU");
+        ml.links.push_back(LIGHT_MENU);
+
+        ml.labels.push_back("  4: CA MENU");
+        ml.links.push_back(CA_MENU);
+
+        ml.labels.push_back("  5: UTILITIES MENU");
+        ml.links.push_back(UTIL_MENU);
+
+        break;
+
+
+      case DRAW_MENU:
+        ml.labels.push_back("DRAW MENU");
+        ml.links.push_back(MAIN_MENU);
+
+        ml.labels.push_back("  1: SPHERE CONFIG MENU");
+        ml.links.push_back(SPHERE_CONFIG);
+        break;
+
+
+      case MASK_MENU:
+        ml.labels.push_back("MASK MENU");
+        ml.links.push_back(MAIN_MENU);
+        break;
+
+
+      case LIGHT_MENU:
+        ml.labels.push_back("LIGHTING MENU");
+        ml.links.push_back(MAIN_MENU);
+        break;
+
+
+      case CA_MENU:
+        ml.labels.push_back("CELLULAR AUTOMATA MENU");
+        ml.links.push_back(MAIN_MENU);
+        break;
+
+
+      case UTIL_MENU:
+        ml.labels.push_back("UTILITIES MENU");
+        ml.links.push_back(MAIN_MENU);
+        break;
+
+
+      case SPHERE_CONFIG:
+        ml.links.push_back(DRAW_MENU);
+        ml.labels.push_back("SPHERE CONFIG MENU");
+
+
+        break;
+
+      default:
+        break;
+    }
+
+    menu[ms] = ml; //put it in the thing so we can get at it later
+
+  }
 }
 
 void voraldo::draw_menu()
 {
   SDL_Rect s;
+  int basex, basey;
 
-  // case DRAW_MENU: //first level submenus - drawing two rectangles
-  // case MASK_MENU:
-  // case UTIL_MENU:
 
-  // SDL_SetRenderDrawColor(SDL_2D_renderer, 100, 100, 255, 255); //this is a good blue
 
+//DRAW THE MAIN MENU BOX
   if (current_menu_state == MAIN_MENU)
   {//highlighted color
     SDL_SetRenderDrawColor(SDL_2D_renderer, 128, 125, 110, 255);
+    basex = 9;
+    basey = 5;
   }
-  else if(current_menu_state == MASK_MENU || current_menu_state == DRAW_MENU || current_menu_state == UTIL_MENU)
+  else if(current_menu_state == MASK_MENU || current_menu_state == DRAW_MENU || current_menu_state == UTIL_MENU || current_menu_state == LIGHT_MENU || current_menu_state == CA_MENU)
   {
     //somewhat dimmed
     SDL_SetRenderDrawColor(SDL_2D_renderer, 100, 100, 100, 255);
+    basex = 14;
+    basey = 22;
   }
   else
   {
     //somewhat more dimmed
     SDL_SetRenderDrawColor(SDL_2D_renderer, 75, 75, 75, 255);
+    basex = 19;
+    basey = 39;
   }
 
   //draw the main menu box with whatever color is set
@@ -392,18 +483,18 @@ void voraldo::draw_menu()
   SDL_SetRenderDrawColor(SDL_2D_renderer, 50, 50, 50, 255);
   SDL_RenderDrawRect(SDL_2D_renderer, &s);
 
-  //this top bit will always be the main menu - so the label can be static
-  ttf_string("Main Menu", 9, 5, 0, 0, 0);
 
 
 
 
+
+  //stuff for the submenus
   if(current_menu_state != MAIN_MENU)
   {
     s = {10,22,Infowindowwidth - 30,Infowindowheight - 50};
 
 
-    if(current_menu_state == MASK_MENU || current_menu_state == DRAW_MENU || current_menu_state == UTIL_MENU)
+    if(current_menu_state == MASK_MENU || current_menu_state == DRAW_MENU || current_menu_state == UTIL_MENU || current_menu_state == LIGHT_MENU || current_menu_state == CA_MENU)
     {
       SDL_SetRenderDrawColor(SDL_2D_renderer, 128, 125, 110, 255);
     }
@@ -417,36 +508,8 @@ void voraldo::draw_menu()
     SDL_SetRenderDrawColor(SDL_2D_renderer, 50, 50, 50, 255);
     SDL_RenderDrawRect(SDL_2D_renderer, &s);
 
-    switch(current_menu_state)
-    {
-      case MASK_MENU: //the mask submenus will also be part of this case
-
-        if(current_menu_state == MASK_MENU)
-          ttf_string("Mask Menu", 14, 22, 255, 51, 0);
-        else
-          ttf_string("Mask Menu", 14, 22, 0, 0, 0); //this is called when you have a submenu open
-        break;
-
-
-      case DRAW_MENU: //draw submenus will also be part of this case
-
-        if(current_menu_state == DRAW_MENU)
-          ttf_string("Draw Menu", 14, 22, 255, 51, 0);
-        else
-          ttf_string("Draw Menu", 14, 22, 0, 0, 0); //this is called when you have a submenu open
-        break;
-
-
-      case UTIL_MENU:
-        if(current_menu_state == UTIL_MENU)
-          ttf_string("Utility Menu", 14, 22, 255, 51, 0);
-        else
-          ttf_string("Utility Menu", 14, 22, 0, 0, 0); //this is called when you have a submenu open
-        break;
-    }
-
     //if it's not level two, it's level three
-    if(!(current_menu_state == MASK_MENU || current_menu_state == DRAW_MENU || current_menu_state == UTIL_MENU))
+    if(!(current_menu_state == MASK_MENU || current_menu_state == DRAW_MENU || current_menu_state == UTIL_MENU || current_menu_state == LIGHT_MENU || current_menu_state == CA_MENU))
     {
       s = {15,39,Infowindowwidth - 30,Infowindowheight - 50};
 
@@ -454,20 +517,43 @@ void voraldo::draw_menu()
       SDL_RenderFillRect(SDL_2D_renderer, &s);
       SDL_SetRenderDrawColor(SDL_2D_renderer, 50, 50, 50, 255);
       SDL_RenderDrawRect(SDL_2D_renderer, &s);
-    }
 
+
+      //this may be the spot to handle the second level menu,
+      //with a switch that looks at the links[0] to see what the parent is
+      switch (menu[current_menu_state].links[0])
+      {
+        case DRAW_MENU:
+          ttf_string("DRAW MENU", 14, 22, 0, 0, 0);
+          break;
+
+        case MASK_MENU:
+          ttf_string("MASK MENU", 14, 22, 0, 0, 0);
+          break;
+
+        case UTIL_MENU:
+          ttf_string("UTILITIES MENU", 14, 22, 0, 0, 0);
+          break;
+
+        case LIGHT_MENU:
+          ttf_string("LIGHTING MENU", 14, 22, 0, 0, 0);
+          break;
+
+        case CA_MENU:
+          ttf_string("CELLULAR AUTOMATA MENU", 14, 22, 0, 0, 0);
+          break;
+
+      }
+    }
+  }
+  //this top bit will always be the main menu - so the label can be static
+  ttf_string("MAIN MENU", 9, 5, 0, 0, 0);
+
+  for(int i = 0; i < menu[current_menu_state].labels.size(); i++)
+  {
+    ttf_string(menu[current_menu_state].labels[i], basex, basey+(20*i), 0, 0, 0);
   }
 
-  //second level submenus - drawing three rectangles
-
-
-  // switch(current_menu_state)
-  // {
-  //
-  //   default:
-  //     break;
-  //
-  // }
 }
 
 void voraldo::create_gl_window()
@@ -493,6 +579,7 @@ void voraldo::create_gl_window()
   GLcontext = SDL_GL_CreateContext( OpenGL_window );
 
 
+  SDL_GL_MakeCurrent(OpenGL_window, GLcontext);
 
   glClearColor( 0.26, 0.16, 0.0, 1.0 );
   glClear( GL_COLOR_BUFFER_BIT );
@@ -513,14 +600,36 @@ void voraldo::create_info_window()
   SDL_SetRenderDrawColor(SDL_2D_renderer, 128, 125, 110, 255);
   SDL_RenderClear(SDL_2D_renderer); //clear our background
 
-  ttf_string(std::string("SYSTEM INFO:"), 10,90, 240, 190, 0);
-  ttf_string(startup_info[0], 10, 110, 200, 170, 0);
-  ttf_string(startup_info[1], 10, 130, 200, 170, 0);
-  ttf_string(startup_info[2], 10, 150, 200, 170, 0);
-  ttf_string(startup_info[3], 10, 170, 200, 170, 0);
-  ttf_string(startup_info[4], 10, 190, 200, 170, 0);
-  ttf_string(startup_info[5], 10, 210, 200, 170, 0);
-  ttf_string(std::string("HIT ENTER TO CONTINUE..."), 10,230, 240, 190, 0);
+  SDL_Rect SrcRect  = {0,0,1200,400};   //where are we taking pixels from when we load the splash screen
+  SDL_Rect DestRect = {0,0,Infowindowwidth,Infowindowwidth/3};  //where are we putting the pixels we took from SrcRect?
+
+  splashBMP = SDL_LoadBMP(splash_path.c_str());
+  splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, splashBMP);
+  SDL_FreeSurface(splashBMP);
+
+  SDL_RenderCopy(SDL_2D_renderer, splash, &SrcRect, &DestRect);
+
+  int baseoffset = Infowindowwidth/3;
+
+  ttf_string(std::string("SYSTEM INFO:"), 10, baseoffset, 240, 190, 0);
+  ttf_string(startup_info[0], 10, baseoffset+20, 200, 170, 0);
+  ttf_string(startup_info[1], 10, baseoffset+40, 200, 170, 0);
+  ttf_string(startup_info[2], 10, baseoffset+60, 200, 170, 0);
+  ttf_string(startup_info[3], 10, baseoffset+80, 200, 170, 0);
+  ttf_string(startup_info[4], 10, baseoffset+100, 200, 170, 0);
+  ttf_string(startup_info[5], 10, baseoffset+120, 200, 170, 0);
+
+
+  ttf_string(std::string("INSTRUCTIONS:"), 10, baseoffset+240, 240, 190, 0);
+
+  ttf_string(std::string("  hit the number of the menu option you wish to select"), 10, baseoffset+270, 240, 190, 0);
+  ttf_string(std::string("  hit escape to go up a level"), 10, baseoffset+290, 240, 190, 0);
+  ttf_string(std::string("  hit escape on the main menu to exit"), 10, baseoffset+310, 240, 190, 0);
+
+
+
+
+  ttf_string(std::string("HIT ENTER TO CONTINUE or ESCAPE TO EXIT..."), 10, baseoffset+440, 240, 190, 0);
 
   SDL_RenderPresent(SDL_2D_renderer); //swap buffers
 
@@ -542,14 +651,6 @@ void voraldo::create_info_window()
   }
 
 
-  // splashBMP = SDL_LoadBMP(splash_path.c_str());
-  // splash = SDL_CreateTextureFromSurface(SDL_2D_renderer, splashBMP);
-  // SDL_FreeSurface(splashBMP);
-
-  // SDL_RenderCopy(SDL_2D_renderer, splash, &SrcRect, &DestRect);
-  // SDL_RenderPresent(SDL_2D_renderer); //swap buffers so that this most recently drawn material is shown to the user
-
-  // SDL_Delay(500);
 
 }
 

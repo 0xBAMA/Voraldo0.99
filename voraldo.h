@@ -185,33 +185,37 @@ private:
 //  ║║║├┤ ││││ │  ╠═╣├─┤│││ │││  │││││ ┬
 //  ╩ ╩└─┘┘└┘└─┘  ╩ ╩┴ ┴┘└┘─┴┘┴─┘┴┘└┘└─┘
 
-  #define NUM_STATES 7  //this is going to change as the number of states increases
 
   typedef enum menu_state_t
   {
-    INVALID,
     EXIT,
 
     MAIN_MENU,    //top level menu - go to this from the splash
 
     DRAW_MENU,    //first level submenus
     MASK_MENU,
+    LIGHT_MENU,
+    CA_MENU,
     UTIL_MENU,
 
     //primitive config submenus
-    SPHERE_CONFIG
-
+    SPHERE_CONFIG,
 
     //...
+
+    INVALID
+
   } menu_state;
+
+  #define NUM_STATES INVALID   //this is going to change as the number of states increases
 
   menu_state current_menu_state;  //so we know where we are when handling new input
 
   //overarching structure for the menu layout - labels and links
   typedef struct menu_layout_t
   {
-    std::vector<std::string> labels;
-    std::vector<menu_state> links;
+    std::vector<std::string> labels;  //zero index is heading for this menu_state
+    std::vector<menu_state> links;    //zero index of links is parent
   } menu_layout;
 
   void assemble_menu_layouts();
@@ -225,8 +229,7 @@ private:
 
   int total_screen_width, total_screen_height;
 
-  SDL_Rect SrcRect  = {0,0,720,405};   //where are we taking pixels from when we load the splash screen
-  SDL_Rect DestRect = {0,0,720,405};  //where are we putting the pixels we took from SrcRect?
+
 
   void sdl_ttf_init();              //set up the font and everything
   TTF_Font *font;                  //the loaded font
